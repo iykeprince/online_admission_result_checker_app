@@ -17,9 +17,10 @@ class User {
       this.gender,
       this.img});
 
-  factory User.fromMap(Map snapshot) {
+  factory User.fromMap(Map snapshot, String id) {
+    print('snapshot user: $snapshot');
     User user = User();
-    user.userId = snapshot['uid'];
+    user.userId = id;
     user.username = snapshot['username'];
     user.email = snapshot['email'];
     user.gender = snapshot['gender'];

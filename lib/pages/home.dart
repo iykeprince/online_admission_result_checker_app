@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:online_admission_result_checker_app/helpers/user.dart';
+import 'package:online_admission_result_checker_app/models/user.dart';
 import 'package:online_admission_result_checker_app/pages/admission-portal.dart';
 import 'package:online_admission_result_checker_app/pages/result-checker.dart';
 import '../widgets/mainHeader.dart';
@@ -52,7 +52,7 @@ class _HomeState extends State<Home> {
           controller: _pageController,
           children: <Widget>[
             AdmissionPortal(),
-            ResultChecker(),
+            ResultChecker(user: widget.user,),
           ],
           onPageChanged: (value) {
             setState(() {

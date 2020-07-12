@@ -2,10 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:online_admission_result_checker_app/helpers/authentication.dart';
-import 'package:online_admission_result_checker_app/helpers/user.dart';
+import 'package:online_admission_result_checker_app/models/user.dart';
 import 'package:online_admission_result_checker_app/pages/forgot-password.dart';
 import 'package:online_admission_result_checker_app/pages/home.dart';
 import 'package:online_admission_result_checker_app/pages/register.dart';
+import 'package:online_admission_result_checker_app/widgets/formField.dart';
 
 BaseAuth _auth = Auth();
 Firestore _firestore = Firestore.instance;
@@ -31,46 +32,6 @@ class _LoginState extends State<Login> {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => Register()),
-    );
-  }
-
-  Container _formField(
-      {TextEditingController controller,
-      String text,
-      String validationText,
-      Icon icon}) {
-    return Container(
-      margin: EdgeInsets.only(
-        top: 10,
-      ),
-      padding: EdgeInsets.only(
-        left: 16,
-      ),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(4),
-        border: Border.all(
-          color: Colors.grey,
-          width: 1,
-        ),
-      ),
-      child: TextFormField(
-        controller: controller,
-        style: TextStyle(
-          fontSize: 16.0,
-        ),
-        decoration: InputDecoration(
-          hintText: text,
-          icon: icon,
-          border: InputBorder.none,
-        ),
-        validator: (value) {
-          if (value.isEmpty) {
-            return validationText;
-          }
-          return null;
-        },
-      ),
     );
   }
 
@@ -109,12 +70,13 @@ class _LoginState extends State<Login> {
         FirebaseUser user = await _auth.getCurrentUser();
         print('Response: $response uid $user');
         DocumentSnapshot doc =
-          await _firestore.document('/users/${user.uid}').get();
+            await _firestore.document('/users/${user.uid}').get();
         print('data ${doc.data}');
         await Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => Home(user: User.fromMap(doc.data))),
+              builder: (context) =>
+                  Home(user: User.fromMap(doc.data, doc.documentID))),
         );
         setState(() {
           isAuthenticating = false;
@@ -155,13 +117,13 @@ class _LoginState extends State<Login> {
                   key: _formKey,
                   child: Column(
                     children: <Widget>[
-                      _formField(
+                      formField(
                         controller: _emailFieldController,
                         text: 'Email',
                         validationText: 'Please enter a valid email',
                         icon: Icon(Icons.account_circle),
                       ),
-                      _formField(
+                      formField(
                         controller: _passwordFieldController,
                         text: 'Password',
                         validationText: 'Please enter a valid password',
@@ -172,6 +134,14 @@ class _LoginState extends State<Login> {
                   ),
                 ),
               ),
+              isAuthenticating
+                      ? Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      )
+                      : Text(''),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
@@ -188,6 +158,7 @@ class _LoginState extends State<Login> {
                     child: Text('Create an account'),
                     onPressed: () => _createAccount(context),
                   ),
+                  
                 ],
               )
             ],

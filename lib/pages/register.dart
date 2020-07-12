@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:online_admission_result_checker_app/helpers/authentication.dart';
-import 'package:online_admission_result_checker_app/helpers/user.dart';
+import 'package:online_admission_result_checker_app/models/user.dart';
+import 'package:online_admission_result_checker_app/widgets/formField.dart';
 
 import 'home.dart';
 
@@ -30,45 +31,7 @@ class _RegisterState extends State<Register> {
   String genderValue = '';
   String errorMessage = '';
 
-  Container _formField(
-      {TextEditingController controller,
-      String text,
-      String validationText,
-      Icon icon}) {
-    return Container(
-      margin: EdgeInsets.only(
-        top: 10,
-      ),
-      padding: EdgeInsets.only(
-        left: 16,
-      ),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(4),
-        border: Border.all(
-          color: Colors.grey,
-          width: 1,
-        ),
-      ),
-      child: TextFormField(
-        controller: controller,
-        style: TextStyle(
-          fontSize: 16.0,
-        ),
-        decoration: InputDecoration(
-          hintText: text,
-          icon: icon,
-          border: InputBorder.none,
-        ),
-        validator: (value) {
-          if (value.isEmpty) {
-            return validationText;
-          }
-          return null;
-        },
-      ),
-    );
-  }
+  
 
   Container _formButton() {
     return Container(
@@ -195,25 +158,25 @@ class _RegisterState extends State<Register> {
                       key: _formKey,
                       child: Column(
                         children: <Widget>[
-                          _formField(
+                          formField(
                               controller: _regNumFieldController,
                               text: 'Enter JAMB Registration number',
                               validationText:
                                   'Please enter your JAMB registration number',
                               icon: Icon(Icons.list)),
-                          _formField(
+                          formField(
                             controller: _usernameFieldController,
                             text: 'Username',
                             validationText: 'Please enter a valid username',
                             icon: Icon(Icons.email),
                           ),
-                          _formField(
+                          formField(
                             controller: _emailFieldController,
                             text: 'Email Address',
                             validationText: 'Please enter a valid email',
                             icon: Icon(Icons.email),
                           ),
-                          _formField(
+                          formField(
                             controller: _phoneFieldController,
                             text: 'Phone Number',
                             validationText: 'Please enter a valid phone number',
@@ -234,13 +197,13 @@ class _RegisterState extends State<Register> {
                             //   ),
                             // ),
                           ]),
-                          _formField(
+                          formField(
                             controller: _passwordFieldController,
                             text: 'Password',
                             validationText: 'Please enter a valid password',
                             icon: Icon(Icons.security),
                           ),
-                          _formField(
+                          formField(
                             controller: _confirmPasswordFieldController,
                             text: 'Confirm Password',
                             validationText: 'Please enter confirm password',

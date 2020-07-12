@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:online_admission_result_checker_app/helpers/authentication.dart';
-import 'package:online_admission_result_checker_app/helpers/user.dart';
+import 'package:online_admission_result_checker_app/models/user.dart';
 
 BaseAuth auth = Auth();
 
