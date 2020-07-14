@@ -5,9 +5,9 @@ Container formField({
   String text,
   String validationText,
   Icon icon,
-  String value,
+  String value = '',
 }) {
-  
+  controller.text = value;
   return Container(
     margin: EdgeInsets.only(
       top: 10,
@@ -24,7 +24,6 @@ Container formField({
       ),
     ),
     child: TextFormField(
-      initialValue:  value != '' ? value : '',
       controller: controller,
       style: TextStyle(
         fontSize: 16.0,

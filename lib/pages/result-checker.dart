@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:online_admission_result_checker_app/models/result.dart';
 import 'package:online_admission_result_checker_app/models/university.dart';
 import 'package:online_admission_result_checker_app/models/user.dart';
 import 'package:online_admission_result_checker_app/pages/verify-cutoff.dart';
@@ -7,6 +8,7 @@ import 'package:online_admission_result_checker_app/widgets/formField.dart';
 
 Firestore _firestore = Firestore.instance;
 CollectionReference ref = _firestore.collection('/results');
+CollectionReference userRef = _firestore.collection('/users');
 Future<QuerySnapshot> universitySnapshot =
     _firestore.collection('/universities').getDocuments();
 
@@ -23,6 +25,11 @@ class ResultChecker extends StatefulWidget {
 class _ResultCheckerState extends State<ResultChecker> {
   final TextEditingController _regNumFieldController = TextEditingController();
   University selectedUniversity;
+
+  bool isUniversitySelected = false;
+
+  bool loading = false;
+  Result result;
 
   Widget buildUniversityList() {
     return Container(
@@ -58,26 +65,44 @@ class _ResultCheckerState extends State<ResultChecker> {
                             querySnapshot.documents.elementAt(index).documentID;
                         University university =
                             University.fromDocument(doc, id);
-                        return ListTile(
-                          title: Text(
-                            university.name,
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
+                        return Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                width: 1,
+                                color: Theme.of(context)
+                                    .primaryColor
+                                    .withOpacity(.1),
+                              ),
+                            ),
+                            child: ListTile(
+                              leading: CircleAvatar(
+                                backgroundColor: Theme.of(context).primaryColor,
+                              ),
+                              contentPadding: EdgeInsets.all(4),
+                              title: Text(
+                                university.name,
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              subtitle: Text(university.accronym),
+                              trailing: Text(
+                                university.founded,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              onTap: () {
+                                setState(() {
+                                  isUniversitySelected = true;
+                                  selectedUniversity = university;
+                                });
+                              },
                             ),
                           ),
-                          subtitle: Text(university.accronym),
-                          trailing: Text(
-                            university.founded,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          onTap: () {
-                            setState(() {
-                              selectedUniversity = university;
-                            });
-                          },
                         );
                       }),
                 ],
@@ -89,9 +114,32 @@ class _ResultCheckerState extends State<ResultChecker> {
     );
   }
 
-  buildResultChecker() {
+  buildResultChecker(University selectedUniversity) {
     return ListView(
       children: <Widget>[
+        Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                selectedUniversity.name,
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+              Text(
+                selectedUniversity.accronym,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
+                ),
+              )
+            ],
+          ),
+        ),
         Center(
           child: Column(
             children: <Widget>[
@@ -103,7 +151,7 @@ class _ResultCheckerState extends State<ResultChecker> {
                 height: 120,
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.green, width: 2),
-                  borderRadius: BorderRadius.circular(50),
+                  shape: BoxShape.circle,
                 ),
               ),
               Padding(
@@ -126,15 +174,41 @@ class _ResultCheckerState extends State<ResultChecker> {
                     ),
                     RaisedButton(
                       color: Theme.of(context).accentColor,
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => VerifyCutOff(),
-                            ));
+                      onPressed: () async {
+                        setState(() {
+                          loading = true;
+                        });
+                        QuerySnapshot studentSnapshot = await userRef
+                            .where('reg_number',
+                                isEqualTo: widget.user.regNumber)
+                            .limit(1)
+                            .getDocuments();
+
+                        if (studentSnapshot.documents.length == 0) {
+                          print('student: no record found');
+                          openResultScreen(null);
+                          return;
+                        }
+
+                        User student = User.fromMap(
+                            studentSnapshot.documents[0].data,
+                            studentSnapshot.documents[0].documentID);
+                        result = Result();
+                        result.user = student;
+                        result.university = selectedUniversity;
+                        result.score = 110;
+                        openResultScreen(result);
+                        print('student ${student.username}');
+                        setState(() {});
+                        // Navigator.push(
+                        //     context,
+                        //     MaterialPageRoute(
+                        //       builder: (context) => VerifyCutOff(),
+                        //     ));
                       },
-                      child: Text('View Application'),
+                      child: Text('Check Result'),
                     ),
+                    loading ? CircularProgressIndicator() : Text(''),
                   ],
                 ),
               ),
@@ -145,12 +219,19 @@ class _ResultCheckerState extends State<ResultChecker> {
     );
   }
 
+  openResultScreen(Result _result) async {
+    await Navigator.pushNamed(context, VerifyCutOff.routeName,
+        arguments: _result);
+    print('result: ${result.score}');
+  }
+
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
-        body: selectedUniversity == null
+        body: !isUniversitySelected
             ? buildUniversityList()
-            : buildResultChecker());
+            : buildResultChecker(
+                selectedUniversity,
+              ));
   }
 }

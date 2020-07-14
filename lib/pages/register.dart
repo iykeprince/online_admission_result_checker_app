@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:online_admission_result_checker_app/helpers/authentication.dart';
 import 'package:online_admission_result_checker_app/models/user.dart';
@@ -7,7 +8,8 @@ import 'package:online_admission_result_checker_app/widgets/formField.dart';
 import 'home.dart';
 
 final BaseAuth _auth = Auth();
-CollectionReference _ref = Firestore.instance.collection('/users');
+Firestore _firestore = Firestore.instance;
+CollectionReference _ref = _firestore.collection('/users');
 
 class Register extends StatefulWidget {
   static const String routeName = '/register';
@@ -81,9 +83,14 @@ class _RegisterState extends State<Register> {
 
       await _ref.document(userId).setData(user.toJson());
       // Navigator.pop(context, 'Account was successfully created');
+      FirebaseUser firebaseUser = await _auth.getCurrentUser();
+        print('Response: $user');
+        DocumentSnapshot doc =
+            await _firestore.document('/users/${firebaseUser.uid}').get();
+            
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => Home()),
+        MaterialPageRoute(builder: (context) => Home(user: User.fromMap(doc.data, doc.documentID))),
       );
     } catch (e) {
       setState(() {

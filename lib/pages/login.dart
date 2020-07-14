@@ -23,6 +23,8 @@ class _LoginState extends State<Login> {
   TextEditingController _emailFieldController = TextEditingController();
   TextEditingController _passwordFieldController = TextEditingController();
 
+  String errorMessage = ''; 
+
   @override
   void initState() {
     super.initState();
@@ -85,6 +87,7 @@ class _LoginState extends State<Login> {
         print('Error: $e');
         setState(() {
           isAuthenticating = false;
+          errorMessage = e.message;
         });
       }
     } else {
@@ -107,9 +110,22 @@ class _LoginState extends State<Login> {
               Padding(
                 padding:
                     const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-                child: Text(
-                  'Login',
-                  style: TextStyle(fontSize: 42),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      'Login',
+                      style: TextStyle(fontSize: 42),
+                    ),
+                    Text(
+                      errorMessage,
+                      style: TextStyle(
+                        color: Colors.redAccent,
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.w200,
+                      ),
+                    ),
+                  ],
                 ),
               ),
               Container(
@@ -135,13 +151,13 @@ class _LoginState extends State<Login> {
                 ),
               ),
               isAuthenticating
-                      ? Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                      )
-                      : Text(''),
+                  ? Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    )
+                  : Text(''),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
@@ -158,7 +174,6 @@ class _LoginState extends State<Login> {
                     child: Text('Create an account'),
                     onPressed: () => _createAccount(context),
                   ),
-                  
                 ],
               )
             ],
