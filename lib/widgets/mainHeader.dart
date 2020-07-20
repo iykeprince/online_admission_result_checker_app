@@ -9,15 +9,11 @@ signout(context) async {
   Navigator.pop(context);
 }
 
-AppBar mainHeader(context, User user) {
+AppBar mainHeader(context, {User user = null, bool isTitle = false, String title = ''}) {
   return AppBar(
-    leading: Padding(
-      padding: const EdgeInsets.all(12.0),
-      child: CircleAvatar(
-        backgroundColor: Colors.blueAccent,
-      ),
-    ),
-    title: Text(user != null ? user.username : ''),
+    centerTitle: true,
+    leading: Text(''),
+    title: Text(user != null ? user.username : isTitle ? title : ''),
     actions: <Widget>[
       FlatButton(
         child: Text(

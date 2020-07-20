@@ -1,5 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:online_admission_result_checker_app/pages/create-application.dart';
 
+import 'pages/application-detail.dart';
 import 'pages/admission-portal.dart';
 import 'pages/forgot-password.dart';
 import 'pages/home.dart';
@@ -11,6 +14,11 @@ import 'pages/welcome.dart';
 
 void main() {
   runApp(MyApp());
+}
+
+getCurrentUser() async {
+  FirebaseUser currentUser = await FirebaseAuth.instance.currentUser();
+  return currentUser;
 }
 
 class MyApp extends StatelessWidget {
@@ -29,6 +37,8 @@ class MyApp extends StatelessWidget {
         AdmissionPortal.routeName: (context) => AdmissionPortal(),
         ResultChecker.routeName: (context) => ResultChecker(),
         VerifyCutOff.routeName: (context) => VerifyCutOff(),
+        CreateApplication.routeName: (context) => CreateApplication(),
+        ApplicationDetail.routeName: (context) => ApplicationDetail(),
       },
       theme: ThemeData(
         primarySwatch: Colors.deepPurple,
@@ -36,8 +46,7 @@ class MyApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       debugShowCheckedModeBanner: false,
-      home: Welcome(title: 'BurkMan'),
+      home: Welcome(),
     );
   }
 }
-

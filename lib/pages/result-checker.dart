@@ -65,6 +65,7 @@ class _ResultCheckerState extends State<ResultChecker> {
                             querySnapshot.documents.elementAt(index).documentID;
                         University university =
                             University.fromDocument(doc, id);
+                        print('university image: ${university.image}');
                         return Padding(
                           padding: const EdgeInsets.only(top: 8.0),
                           child: Container(
@@ -78,7 +79,8 @@ class _ResultCheckerState extends State<ResultChecker> {
                             ),
                             child: ListTile(
                               leading: CircleAvatar(
-                                backgroundColor: Theme.of(context).primaryColor,
+                                backgroundImage: NetworkImage(university.image),
+                                backgroundColor: Colors.transparent,
                               ),
                               contentPadding: EdgeInsets.all(4),
                               title: Text(
@@ -149,9 +151,15 @@ class _ResultCheckerState extends State<ResultChecker> {
               Container(
                 width: 120,
                 height: 120,
+                padding: EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  border: Border.all(color: Colors.green, width: 2),
+                  
                   shape: BoxShape.circle,
+                  image: DecorationImage(
+                    image: NetworkImage(
+                      selectedUniversity.image,
+                    ),
+                  ),
                 ),
               ),
               Padding(
@@ -190,13 +198,13 @@ class _ResultCheckerState extends State<ResultChecker> {
                           return;
                         }
 
-                        User student = User.fromMap(
+                        User student = User.fromDocument(
                             studentSnapshot.documents[0].data,
                             studentSnapshot.documents[0].documentID);
                         result = Result();
                         result.user = student;
                         result.university = selectedUniversity;
-                        result.score = 110;
+                        result.score = 220;
                         openResultScreen(result);
                         print('student ${student.username}');
                         setState(() {});

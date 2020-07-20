@@ -32,8 +32,7 @@ class _RegisterState extends State<Register> {
 
   String genderValue = '';
   String errorMessage = '';
-
-  
+  bool isPassword = false;
 
   Container _formButton() {
     return Container(
@@ -84,13 +83,15 @@ class _RegisterState extends State<Register> {
       await _ref.document(userId).setData(user.toJson());
       // Navigator.pop(context, 'Account was successfully created');
       FirebaseUser firebaseUser = await _auth.getCurrentUser();
-        print('Response: $user');
-        DocumentSnapshot doc =
-            await _firestore.document('/users/${firebaseUser.uid}').get();
-            
+      print('Response: $user');
+      DocumentSnapshot doc =
+          await _firestore.document('/users/${firebaseUser.uid}').get();
+
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => Home(user: User.fromMap(doc.data, doc.documentID))),
+        MaterialPageRoute(
+            builder: (context) =>
+                Home(user: User.fromDocument(doc.data, doc.documentID))),
       );
     } catch (e) {
       setState(() {
@@ -144,8 +145,8 @@ class _RegisterState extends State<Register> {
               ),
               errorMessage != ''
                   ? Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Text(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Text(
                         errorMessage,
                         style: TextStyle(
                           fontSize: 14,
@@ -153,7 +154,7 @@ class _RegisterState extends State<Register> {
                           color: Colors.red,
                         ),
                       ),
-                  )
+                    )
                   : Text(''),
               Container(
                 padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16),
@@ -170,24 +171,29 @@ class _RegisterState extends State<Register> {
                               text: 'Enter JAMB Registration number',
                               validationText:
                                   'Please enter your JAMB registration number',
-                              icon: Icon(Icons.list)),
+                              icon: Icon(Icons.list),
+                              value: _regNumFieldController.text, 
+                            ),
                           formField(
                             controller: _usernameFieldController,
                             text: 'Username',
                             validationText: 'Please enter a valid username',
                             icon: Icon(Icons.email),
+                            value: _usernameFieldController.text,
                           ),
                           formField(
                             controller: _emailFieldController,
                             text: 'Email Address',
                             validationText: 'Please enter a valid email',
                             icon: Icon(Icons.email),
+                            value: _emailFieldController.text,
                           ),
                           formField(
                             controller: _phoneFieldController,
                             text: 'Phone Number',
                             validationText: 'Please enter a valid phone number',
                             icon: Icon(Icons.phone),
+                            value: _phoneFieldController.text,
                           ),
                           Row(children: <Widget>[
                             // Expanded(
@@ -209,12 +215,16 @@ class _RegisterState extends State<Register> {
                             text: 'Password',
                             validationText: 'Please enter a valid password',
                             icon: Icon(Icons.security),
+                            isPassword: true,
+                            value: _passwordFieldController.text,
                           ),
                           formField(
-                            controller: _confirmPasswordFieldController,
-                            text: 'Confirm Password',
-                            validationText: 'Please enter confirm password',
-                            icon: Icon(Icons.security),
+                              controller: _confirmPasswordFieldController,
+                              text: 'Confirm Password',
+                              validationText: 'Please enter confirm password',
+                              icon: Icon(Icons.security),
+                              isPassword: true,
+                             value: _confirmPasswordFieldController.text,
                           ),
                           _formButton(),
                         ],

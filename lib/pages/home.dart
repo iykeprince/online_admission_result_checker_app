@@ -18,6 +18,9 @@ class _HomeState extends State<Home> {
   int pageIndex = 0;
   PageController _pageController;
 
+  List<String> _pageList = ['Admission Portal', 'Result Checker'];
+  String _pageTitle;
+
   @override
   void initState() {
     _pageController = PageController(initialPage: pageIndex);
@@ -44,19 +47,22 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     // _pageController.jumpToPage(pageIndex);
-
+    _pageTitle = _pageList[pageIndex];
     return Scaffold(
-      appBar: mainHeader(context, widget.user),
+      appBar: mainHeader(context, isTitle: true, title: _pageTitle),
       body: Container(
         child: PageView(
           controller: _pageController,
           children: <Widget>[
             AdmissionPortal(),
-            ResultChecker(user: widget.user,),
+            ResultChecker(
+              user: widget.user,
+            ),
           ],
           onPageChanged: (value) {
             setState(() {
               pageIndex = value;
+             
             });
           },
           pageSnapping: true,
@@ -68,7 +74,7 @@ class _HomeState extends State<Home> {
           setState(() {
             pageIndex = value;
           });
-          _pageController.animateToPage( 
+          _pageController.animateToPage(
             pageIndex,
             duration: Duration(milliseconds: 300),
             curve: Curves.easeInOut,

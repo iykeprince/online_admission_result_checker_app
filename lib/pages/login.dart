@@ -78,7 +78,7 @@ class _LoginState extends State<Login> {
           context,
           MaterialPageRoute(
               builder: (context) =>
-                  Home(user: User.fromMap(doc.data, doc.documentID))),
+                  Home(user: User.fromDocument(doc.data, doc.documentID))),
         );
         setState(() {
           isAuthenticating = false;
@@ -138,12 +138,15 @@ class _LoginState extends State<Login> {
                         text: 'Email',
                         validationText: 'Please enter a valid email',
                         icon: Icon(Icons.account_circle),
+                        value: _emailFieldController.text,
                       ),
                       formField(
                         controller: _passwordFieldController,
                         text: 'Password',
                         validationText: 'Please enter a valid password',
                         icon: Icon(Icons.security),
+                        value: _passwordFieldController.text,
+                        isPassword: true,
                       ),
                       _formButton(onPressed: login, text: 'Sign In'),
                     ],

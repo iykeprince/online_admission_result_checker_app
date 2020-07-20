@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:online_admission_result_checker_app/models/result.dart';
 
+import 'create-application.dart';
+
 class VerifyCutOff extends StatefulWidget {
   static const String routeName = '/verifyCutOff';
 
@@ -34,6 +36,7 @@ class _VerifyCutOffState extends State<VerifyCutOff> {
         : ListView(
             children: <Widget>[
               Container(
+                padding: EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
@@ -46,7 +49,8 @@ class _VerifyCutOffState extends State<VerifyCutOff> {
                     Text(
                       '${result.score}',
                       style: TextStyle(
-                        fontSize: 20,
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                     Divider(),
@@ -77,7 +81,7 @@ class _VerifyCutOffState extends State<VerifyCutOff> {
                         Text(
                           '${result.user.username}',
                           style: TextStyle(
-                            fontSize: 14.0,
+                            fontSize: 20.0,
                           ),
                         )
                       ],
@@ -87,7 +91,7 @@ class _VerifyCutOffState extends State<VerifyCutOff> {
                         Text(
                           'Email',
                           style: TextStyle(
-                            fontSize: 14.0,
+                            fontSize: 16.0,
                           ),
                         ),
                         Padding(
@@ -96,7 +100,7 @@ class _VerifyCutOffState extends State<VerifyCutOff> {
                         Text(
                           '${result.user.email}',
                           style: TextStyle(
-                            fontSize: 14.0,
+                            fontSize: 18.0,
                           ),
                         )
                       ],
@@ -115,7 +119,7 @@ class _VerifyCutOffState extends State<VerifyCutOff> {
                         Text(
                           '${result.user.phone}',
                           style: TextStyle(
-                            fontSize: 14.0,
+                            fontSize: 18.0,
                           ),
                         )
                       ],
@@ -134,22 +138,39 @@ class _VerifyCutOffState extends State<VerifyCutOff> {
                         Text(
                           '${result.user.regNumber}',
                           style: TextStyle(
-                            fontSize: 14.0,
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.bold,
                           ),
                         )
                       ],
                     ),
                     Padding(
-                      padding: EdgeInsets.all(10),
+                      padding: EdgeInsets.symmetric(vertical: 10),
+                      child: Divider(),
                     ),
-                    Container(
-                      child: FlatButton(
-                        child: Text('Apply'),
-                        onPressed: () {
-                          print('applying...');
-                        },
-                      ),
-                    ),
+                    result.score > 180
+                        ? Align(
+                            alignment: Alignment.center,
+                            child: RaisedButton(
+                              child: Text(
+                                'Apply',
+                              ),
+                              color: Theme.of(context).accentColor,
+                              onPressed: () {
+                                print('applying...');
+                                Navigator.pushNamed(
+                                    context, CreateApplication.routeName,
+                                    arguments: result);
+                              },
+                            ),
+                          )
+                        : Container(
+                            child: Center(
+                              child: Text(
+                                  'Sorry but your score didn\'t meet with the university cut-off, you are applying for. Please try again some other time.',
+                                  style: TextStyle(color: Colors.red, fontSize: 18.0, ),),
+                            ),
+                          ),
                   ],
                 ),
               ),

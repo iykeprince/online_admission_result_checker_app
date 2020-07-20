@@ -1,9 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import 'home.dart';
 import 'login.dart';
 import 'register.dart';
-
-
 
 class Welcome extends StatefulWidget {
   Welcome({Key key, this.title}) : super(key: key);
@@ -24,6 +24,19 @@ class Welcome extends StatefulWidget {
 }
 
 class _WelcomeState extends State<Welcome> {
+  @override
+  void initState() {
+    FirebaseAuth.instance.currentUser().then((value) {
+      print('value $value');
+      if (value != null) {
+        Home();
+      } else {
+        Login();
+      }
+    });
+    super.initState();
+  }
+
   void _signIn(context) {
     Navigator.push(
       context,
@@ -40,6 +53,10 @@ class _WelcomeState extends State<Welcome> {
 
   @override
   Widget build(BuildContext context) {
+    return Container(child: buildWelcome(context));
+  }
+
+  buildWelcome(context) {
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       body: Column(

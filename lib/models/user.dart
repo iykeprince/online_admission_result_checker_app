@@ -17,7 +17,7 @@ class User {
       this.gender,
       this.img});
 
-  factory User.fromMap(Map snapshot, String id) {
+  factory User.fromDocument(snapshot, String id) {
     print('snapshot user: $snapshot');
     User user = User();
     user.userId = id;
