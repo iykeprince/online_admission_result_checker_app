@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
-import 'package:online_admission_result_checker_app/models/application.dart';
-import 'package:online_admission_result_checker_app/widgets/mainHeader.dart';
+import '../models/application.dart';
+import '../widgets/mainHeader.dart';
 import 'package:screenshot/screenshot.dart';
 
 class ApplicationDetail extends StatefulWidget {

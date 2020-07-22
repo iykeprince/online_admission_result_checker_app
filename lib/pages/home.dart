@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:online_admission_result_checker_app/models/user.dart';
-import 'package:online_admission_result_checker_app/pages/admission-portal.dart';
-import 'package:online_admission_result_checker_app/pages/result-checker.dart';
+import '../models/user.dart';
+import '../pages/admission-portal.dart';
+import '../pages/result-checker.dart';
 import '../widgets/mainHeader.dart';
 
 class Home extends StatefulWidget {

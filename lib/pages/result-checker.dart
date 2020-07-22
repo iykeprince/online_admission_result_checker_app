@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:online_admission_result_checker_app/models/result.dart';
-import 'package:online_admission_result_checker_app/models/university.dart';
-import 'package:online_admission_result_checker_app/models/user.dart';
-import 'package:online_admission_result_checker_app/pages/verify-cutoff.dart';
-import 'package:online_admission_result_checker_app/widgets/formField.dart';
+import '../models/result.dart';
+import '../models/university.dart';
+import '../models/user.dart';
+import '../pages/verify-cutoff.dart';
+import '../widgets/formField.dart';
 
 Firestore _firestore = Firestore.instance;
 CollectionReference ref = _firestore.collection('/results');

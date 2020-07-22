@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:online_admission_result_checker_app/helpers/authentication.dart';
-import 'package:online_admission_result_checker_app/models/user.dart';
-import 'package:online_admission_result_checker_app/widgets/formField.dart';
+import '../helpers/authentication.dart';
+import '../models/user.dart';
+import '../widgets/formField.dart';
 
 import 'home.dart';
 

@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:online_admission_result_checker_app/pages/create-application.dart';
+import 'pages/create-application.dart';
 
 import 'pages/application-detail.dart';
 import 'pages/admission-portal.dart';

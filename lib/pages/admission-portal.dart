@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:online_admission_result_checker_app/models/application.dart';
-import 'package:online_admission_result_checker_app/models/course.dart';
-import 'package:online_admission_result_checker_app/models/result.dart';
-import 'package:online_admission_result_checker_app/models/university.dart';
-import 'package:online_admission_result_checker_app/models/user.dart';
+import '../models/application.dart';
+import '../models/course.dart';
+import '../models/result.dart';
+import '../models/university.dart';
+import '../models/user.dart';
 import 'application-detail.dart';
 
 class AdmissionPortal extends StatefulWidget {

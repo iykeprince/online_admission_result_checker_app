@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:online_admission_result_checker_app/pages/login.dart';
+import '../pages/login.dart';
 
 class ForgotPassword extends StatefulWidget {
   static const String routeName = '/forgotPassword';

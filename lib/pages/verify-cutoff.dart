@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:online_admission_result_checker_app/models/result.dart';
+import '../models/result.dart';
 
 import 'create-application.dart';
 

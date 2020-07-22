@@ -1,12 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:online_admission_result_checker_app/helpers/authentication.dart';
-import 'package:online_admission_result_checker_app/models/user.dart';
-import 'package:online_admission_result_checker_app/pages/forgot-password.dart';
-import 'package:online_admission_result_checker_app/pages/home.dart';
-import 'package:online_admission_result_checker_app/pages/register.dart';
-import 'package:online_admission_result_checker_app/widgets/formField.dart';
+import '../helpers/authentication.dart';
+import '../models/user.dart';
+import '../pages/forgot-password.dart';
+import '../pages/home.dart';
+import '../pages/register.dart';
+import '../widgets/formField.dart';
 
 BaseAuth _auth = Auth();
 Firestore _firestore = Firestore.instance;

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:online_admission_result_checker_app/models/course.dart';
-import 'package:online_admission_result_checker_app/models/entry.dart';
-import 'package:online_admission_result_checker_app/models/result.dart';
-import 'package:online_admission_result_checker_app/pages/admission-portal.dart';
-import 'package:online_admission_result_checker_app/widgets/formField.dart';
-import 'package:online_admission_result_checker_app/widgets/mainHeader.dart';
+import '../models/course.dart';
+import '../models/entry.dart';
+import '../models/result.dart';
+import '../pages/admission-portal.dart';
+import '../widgets/formField.dart';
+import '../widgets/gradeField.dart';
+import '../widgets/mainHeader.dart';
+import '../widgets/subjectField.dart';
 
 class CreateApplication extends StatefulWidget {
   static const String routeName = '/createApplication';
@@ -19,12 +21,7 @@ class _CreateApplicationState extends State<CreateApplication> {
   TextEditingController _emailFieldController = TextEditingController();
   TextEditingController _phoneFieldController = TextEditingController();
 
-  List<TextEditingController> _subjectFieldControllers =
-      List<TextEditingController>();
-  List<TextEditingController> _scoreFieldControllers =
-      List<TextEditingController>();
-  List<TextEditingController> _gradeFieldControllers =
-      List<TextEditingController>();
+  List<TextEditingController> _scoreFieldControllers = <TextEditingController>[];
 
   List<Entry> entryList = List();
   List<Course> rowList = List();
@@ -36,7 +33,7 @@ class _CreateApplicationState extends State<CreateApplication> {
   //   'NECO',
   //   'GCE',
   // ];
-  int _entryIndex;
+  int _entryIndex = 0;
   int applicationIndex = 0;
   List<String> appTitle = [
     'Personal Information',
@@ -50,9 +47,9 @@ class _CreateApplicationState extends State<CreateApplication> {
     super.initState();
     // rowList.add(Course(subject: 'Mathematics', score: '90', grade: 'A'));
     // rowList.add(Course(subject: 'English', score: '67', grade: 'B'));
-    entryList.add(Entry(name: 'WASSCE', courses: []));
-    entryList.add(Entry(name: 'NECO', courses: []));
-    entryList.add(Entry(name: 'GCE', courses: []));
+    entryList.add(Entry(entryIndex: 0, name: 'WASSCE', courses: []));
+    entryList.add(Entry(entryIndex: 1, name: 'NECO', courses: []));
+    entryList.add(Entry(entryIndex: 2, name: 'GCE', courses: []));
     _selectedEntry = entryList[0].name;
   }
 
@@ -483,14 +480,8 @@ class _CreateApplicationState extends State<CreateApplication> {
                               print('entry: $value');
                               setState(() {
                                 _selectedEntry = value;
-
-                                _entryIndex = entryList.indexWhere((element) {
-                                  print(
-                                      'element: name - ${element.name}, course: ${element.courses.toString()}');
-                                  print('select ed entry: $_selectedEntry');
-                                  return element.name == value;
-                                });
-                                print('current entry index $_entryIndex');
+                                _entryIndex = entryList.indexWhere(
+                                    (element) => element.name == value);
                               });
                             },
                             value: _selectedEntry,
@@ -504,13 +495,17 @@ class _CreateApplicationState extends State<CreateApplication> {
                         onPressed: () {
                           print('selected Entry $_selectedEntry');
                           setState(() {
+                            print('entry index: $_entryIndex');
                             List<Entry> newEntries = entryList
                                 .where(
                                     (element) => element.name == _selectedEntry)
                                 .toList();
                             if (newEntries.length == 0) {
                               entryList.add(
-                                Entry(name: _selectedEntry, courses: []),
+                                Entry(
+                                    entryIndex: _entryIndex,
+                                    name: _selectedEntry,
+                                    courses: []),
                               );
                             }
                           });
@@ -532,9 +527,9 @@ class _CreateApplicationState extends State<CreateApplication> {
               ),
               Container(
                 child: Column(
-                  children: entryList.map((entry) {
-                    return entry.courses.length > 0
-                        ? Padding(
+                  children: entryList.length > 0
+                      ? entryList.map((entry) {
+                          return Padding(
                             padding: const EdgeInsets.only(top: 8.0),
                             child: Container(
                               decoration: BoxDecoration(
@@ -556,83 +551,83 @@ class _CreateApplicationState extends State<CreateApplication> {
                                       ),
                                     ),
                                   ),
-                                  DataTable(
-                                    columns: <DataColumn>[
-                                      DataColumn(
-                                        label: Text(
-                                          'Subject',
-                                          style: TextStyle(
-                                            fontSize: 14.0,
+                                  SingleChildScrollView(
+                                                     scrollDirection: Axis.horizontal,                 child: DataTable(
+                                      columns: <DataColumn>[
+                                        DataColumn(
+                                          label: Text(
+                                            'Subject',
+                                            style: TextStyle(
+                                              fontSize: 14.0,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      DataColumn(
-                                        label: Text(
-                                          'Score',
-                                          style: TextStyle(
-                                            fontSize: 14.0,
+                                        DataColumn(
+                                          label: Text(
+                                            'Score',
+                                            style: TextStyle(
+                                              fontSize: 14.0,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      DataColumn(
-                                        label: Text(
-                                          'Grade',
-                                          style: TextStyle(
-                                            fontSize: 14.0,
+                                        DataColumn(
+                                          label: Text(
+                                            'Grade',
+                                            style: TextStyle(
+                                              fontSize: 14.0,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      DataColumn(
-                                        label: IconButton(
-                                          icon: Icon(Icons.add),
-                                          onPressed: () {
-                                            setState(() {
-                                              // List<Entry> newEntries = entryList
-                                              //     .where((element) =>
-                                              //         element.name == _selectedEntry)
-                                              //     .toList();
-                                              Course course = new Course();
-                                              course.subject = 'Physics';
-                                              course.grade = 'B';
-                                              course.score = '66';
-                                              entryList[_entryIndex]
-                                                  .courses
-                                                  .add(course);
-                                            });
-                                          },
-                                        ),
-                                      ),
-                                    ],
-                                    rows: entry.courses.map((row) {
-                                      int index = entry.courses.indexOf(row);
-
-                                      // _subjectFieldControllers[index] = TextEditingController();
-                                      // _scoreFieldControllers[index] = TextEditingController();
-                                      // _gradeFieldControllers[index] = TextEditingController();
-                                      print('courses entry $index');
-                                      return DataRow(cells: <DataCell>[
-                                        DataCell(Text(row.subject)),
-                                        DataCell(Text(row.score)),
-                                        DataCell(Text(row.grade)),
-                                        DataCell(
-                                          FlatButton.icon(
-                                            label: Text(''),
-                                            icon: Icon(Icons.remove),
+                                        DataColumn(
+                                          label: IconButton(
+                                            icon: Icon(Icons.add),
                                             onPressed: () {
-                                              print(
-                                                  'cell index ${row.subject}');
+                                              setState(() {
+                                                Course course = new Course();
+                                                course.subject = 'Physics';
+                                                course.grade = 'B';
+                                                course.score = '66';
+                                                entryList[entry.entryIndex]
+                                                    .courses
+                                                    .add(course);
+                                              });
                                             },
                                           ),
                                         ),
-                                      ]);
-                                    }).toList(),
+                                      ],
+                                      rows: entry.courses.length > 0
+                                          ? entry.courses.map((row) {
+                                              int index =
+                                                  entry.courses.indexOf(row);
+                                              TextEditingController _controller = new TextEditingController();
+                                              print('courses entry $index');
+                                              return DataRow(cells: <DataCell>[
+                                                DataCell(
+                                                  SubjectField(course: row)),
+                                                DataCell(_addScoreField(_controller, row)),
+                                                DataCell(
+                                                    GradeField(course: row)),
+                                                DataCell(
+                                                  FlatButton.icon(
+                                                    label: Text(''),
+                                                    icon: Icon(Icons.remove),
+                                                    onPressed: () {
+                                                      entry.courses
+                                                          .removeAt(index);
+                                                    },
+                                                  ),
+                                                ),
+                                              ]);
+                                            }).toList()
+                                          : [],
+                                    ),
                                   ),
                                 ],
                               ),
                             ),
-                          )
-                        : Container();
-                  }).toList(),
+                          );
+                        }).toList()
+                      : Container(),
                 ),
               ),
               Divider(),
@@ -770,6 +765,28 @@ class _CreateApplicationState extends State<CreateApplication> {
           ),
         ),
       ],
+    );
+  }
+
+  _addScoreField(TextEditingController controller, Course course) {
+    return Container(
+      padding: EdgeInsets.all(4),
+      margin: EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border.all(width: 1, color: Colors.grey),
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: TextFormField(
+        decoration: InputDecoration(border: InputBorder.none, contentPadding: const EdgeInsets.symmetric(horizontal: 10) ),
+        onChanged: (value) {
+          setState(() {
+            course.score = value;
+          });
+        },
+        controller: controller,
+        keyboardType: TextInputType.text,
+      ),
     );
   }
 
