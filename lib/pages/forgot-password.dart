@@ -1,4 +1,6 @@
+//importing material package
 import 'package:flutter/material.dart';
+//importing the login screen
 import '../pages/login.dart';
 
 class ForgotPassword extends StatefulWidget {
@@ -11,7 +13,7 @@ class ForgotPassword extends StatefulWidget {
 }
 
 class _ForgotPasswordState extends State<ForgotPassword> {
-  final _formKey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();//initialize the global key
   @override
   Widget build(BuildContext context) {
     return Scaffold(

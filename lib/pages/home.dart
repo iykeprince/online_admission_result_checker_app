@@ -1,32 +1,34 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';//importing material package 
+//import user model
 import '../models/user.dart';
+//importing screens
 import '../pages/admission-portal.dart';
 import '../pages/result-checker.dart';
-import '../widgets/mainHeader.dart';
+import '../widgets/mainHeader.dart';//importing widget for mainHeader
 
 class Home extends StatefulWidget {
   static const String routeName = '/home';
   Home({Key key, this.user}) : super(key: key);
 
-  User user;
+  User user;//user object 
 
   @override
   _HomeState createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
-  int pageIndex = 0;
-  PageController _pageController;
+  int pageIndex = 0;//initializing the page index
+  PageController _pageController;//instantiating the pagecontroller for pageview
 
-  List<String> _pageList = ['Admission Portal', 'Result Checker'];
-  String _pageTitle;
+  List<String> _pageList = ['Admission Portal', 'Result Checker'];//list of pages in pageview
+  String _pageTitle;//initialize each page title for appbar
 
   @override
   void initState() {
-    _pageController = PageController(initialPage: pageIndex);
+    _pageController = PageController(initialPage: pageIndex);//initialize the page view
     super.initState();
   }
-
+  // method for opening admission portal
   void _admissionPortal() {
     Navigator.push(
       context,
@@ -35,7 +37,7 @@ class _HomeState extends State<Home> {
       ),
     );
   }
-
+  // method for opening result checking
   void _resultChecker() {
     Navigator.push(
         context,
@@ -46,10 +48,10 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    // _pageController.jumpToPage(pageIndex);
-    _pageTitle = _pageList[pageIndex];
+    // _pageController.jumpToPage(pageIndex); 
+    _pageTitle = _pageList[pageIndex];//set the necessary page title
     return Scaffold(
-      appBar: mainHeader(context, isTitle: true, title: _pageTitle),
+      appBar: mainHeader(context, isTitle: true, title: _pageTitle),//set the custom main header
       body: Container(
         child: PageView(
           controller: _pageController,

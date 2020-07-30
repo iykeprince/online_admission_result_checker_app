@@ -1,8 +1,12 @@
+//importing material package
 import 'package:flutter/material.dart';
+//importing course, entry, result model
 import '../models/course.dart';
 import '../models/entry.dart';
 import '../models/result.dart';
+//import admission-portal screen
 import '../pages/admission-portal.dart';
+//import custom widgets for form field, grade field, main header and subject field.
 import '../widgets/formField.dart';
 import '../widgets/gradeField.dart';
 import '../widgets/mainHeader.dart';
@@ -17,14 +21,14 @@ class CreateApplication extends StatefulWidget {
 }
 
 class _CreateApplicationState extends State<CreateApplication> {
-  TextEditingController _regNumberFieldController = TextEditingController();
-  TextEditingController _emailFieldController = TextEditingController();
-  TextEditingController _phoneFieldController = TextEditingController();
+  TextEditingController _regNumberFieldController = TextEditingController();//initialize the reg number controller
+  TextEditingController _emailFieldController = TextEditingController();//initialize email controller
+  TextEditingController _phoneFieldController = TextEditingController();//initialize phone controller
 
-  List<TextEditingController> _scoreFieldControllers = <TextEditingController>[];
+  List<TextEditingController> _scoreFieldControllers = <TextEditingController>[];//initialise score field array
 
-  List<Entry> entryList = List();
-  List<Course> rowList = List();
+  List<Entry> entryList = List();//initialize entry list 
+  List<Course> rowList = List();// initialize row list
 
   String title = '';
   String _selectedEntry = '';
@@ -53,7 +57,7 @@ class _CreateApplicationState extends State<CreateApplication> {
     _selectedEntry = entryList[0].name;
   }
 
-  _buildCreateApplication(Result result) {
+  _buildCreateApplication(Result result) {//method to create application based on application index position
     switch (applicationIndex) {
       case 0:
         return _buildPersonalInfo();
@@ -67,7 +71,7 @@ class _CreateApplicationState extends State<CreateApplication> {
         return Text('building Screens');
     }
   }
-
+  //method to show screen if submitted
   _buildSubmitted() {
     return Center(
       child: Container(
@@ -100,7 +104,7 @@ class _CreateApplicationState extends State<CreateApplication> {
       ),
     );
   }
-
+  //method to preview application before submiting
   _buildPreviewInfo(Result result) {
     return Column(
       children: <Widget>[
@@ -437,7 +441,7 @@ class _CreateApplicationState extends State<CreateApplication> {
       ],
     );
   }
-
+  //method to show UI for inputing and handling O'level
   _buildOlevel() {
     return Column(
       children: [
@@ -670,6 +674,7 @@ class _CreateApplicationState extends State<CreateApplication> {
     );
   }
 
+  //method for personal bio data
   _buildPersonalInfo() {
     return Column(
       children: <Widget>[
@@ -767,7 +772,8 @@ class _CreateApplicationState extends State<CreateApplication> {
       ],
     );
   }
-
+  
+  //method for generating score field
   _addScoreField(TextEditingController controller, Course course) {
     return Container(
       padding: EdgeInsets.all(4),

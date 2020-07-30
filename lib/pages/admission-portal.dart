@@ -1,13 +1,16 @@
+//importing material package
 import 'package:flutter/material.dart';
+//import application, course, result, user and university model
 import '../models/application.dart';
 import '../models/course.dart';
 import '../models/result.dart';
 import '../models/university.dart';
 import '../models/user.dart';
+//import the application-detail screen
 import 'application-detail.dart';
 
 class AdmissionPortal extends StatefulWidget {
-  static const String routeName = '/admissionPortal';
+  static const String routeName = '/admissionPortal';//constant admission portal screen route
 
   AdmissionPortal({Key key}) : super(key: key);
 
@@ -16,12 +19,12 @@ class AdmissionPortal extends StatefulWidget {
 }
 
 class _AdmissionPortalState extends State<AdmissionPortal> {
-  List<Application> applicationList = List();
+  List<Application> applicationList = List();//initialize application list
 
-  List<Course> courseList = List();
-  Result result = Result();
-  User user = User();
-  University university = University();
+  List<Course> courseList = List();//initialize course list
+  Result result = Result();//initialize result object
+  User user = User();//initialize user object
+  University university = University();//initialize university object
 
   @override
   void initState() {
@@ -56,7 +59,7 @@ class _AdmissionPortalState extends State<AdmissionPortal> {
       user: user,
     ));
   }
-
+  //method for presenting and displaying each item on the listview
   _applicationItem(context, index, list) {
     final Application item = list[index];
     print('application list size: ${list.length}');

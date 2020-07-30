@@ -1,20 +1,25 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+//importing material package
 import 'package:flutter/material.dart';
+//import firestore
+import 'package:cloud_firestore/cloud_firestore.dart';
+//import result, user and university model
 import '../models/result.dart';
 import '../models/university.dart';
 import '../models/user.dart';
+//importing screen
 import '../pages/verify-cutoff.dart';
+//import custom form field widget
 import '../widgets/formField.dart';
 
-Firestore _firestore = Firestore.instance;
-CollectionReference ref = _firestore.collection('/results');
-CollectionReference userRef = _firestore.collection('/users');
+Firestore _firestore = Firestore.instance;//initialize firestore
+CollectionReference ref = _firestore.collection('/results');//initialize results collection
+CollectionReference userRef = _firestore.collection('/users');//initialize users collection
 Future<QuerySnapshot> universitySnapshot =
-    _firestore.collection('/universities').getDocuments();
+    _firestore.collection('/universities').getDocuments();//get documents for universities collection
 
 class ResultChecker extends StatefulWidget {
-  static const String routeName = '/resultChecker';
-
+  static const String routeName = '/resultChecker';//constant for screen navigation route
+//constructor contains logged in user object
   ResultChecker({Key key, this.user}) : super(key: key);
   User user;
 
@@ -23,14 +28,15 @@ class ResultChecker extends StatefulWidget {
 }
 
 class _ResultCheckerState extends State<ResultChecker> {
-  final TextEditingController _regNumFieldController = TextEditingController();
-  University selectedUniversity;
+  final TextEditingController _regNumFieldController = TextEditingController();//initialize reg number controller
+  University selectedUniversity;//selected university
 
-  bool isUniversitySelected = false;
+  bool isUniversitySelected = false;//check if university is selected or choosen
 
-  bool loading = false;
-  Result result;
-
+  bool loading = false;//for showing/hiding progress
+  Result result;//instantiate result
+  
+  //method to return university list widget
   Widget buildUniversityList() {
     return Container(
       child: FutureBuilder(
@@ -116,6 +122,7 @@ class _ResultCheckerState extends State<ResultChecker> {
     );
   }
 
+  //method to show result 
   buildResultChecker(University selectedUniversity) {
     return ListView(
       children: <Widget>[
@@ -227,6 +234,7 @@ class _ResultCheckerState extends State<ResultChecker> {
     );
   }
 
+  //open result screen
   openResultScreen(Result _result) async {
     await Navigator.pushNamed(context, VerifyCutOff.routeName,
         arguments: _result);

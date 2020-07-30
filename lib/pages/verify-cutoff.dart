@@ -20,6 +20,7 @@ class _VerifyCutOffState extends State<VerifyCutOff> {
     super.initState();
   }
 
+  //method to show result screen
   _buildResultScreen({Result result}) {
     return result == null
         ? Column(
@@ -180,7 +181,7 @@ class _VerifyCutOffState extends State<VerifyCutOff> {
 
   @override
   Widget build(BuildContext context) {
-    Result result = ModalRoute.of(context).settings.arguments;
+    Result result = ModalRoute.of(context).settings.arguments;//read from passed navigator argument
     return Scaffold(
       appBar: AppBar(
         elevation: 0,

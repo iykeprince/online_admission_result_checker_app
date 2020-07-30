@@ -1,6 +1,7 @@
+import 'package:flutter/material.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import '../helpers/authentication.dart';
 import '../models/user.dart';
 import '../widgets/formField.dart';
@@ -21,20 +22,20 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
-  final _formKey = GlobalKey<FormState>();
-  TextEditingController _usernameFieldController = TextEditingController();
-  TextEditingController _regNumFieldController = TextEditingController();
-  TextEditingController _emailFieldController = TextEditingController();
-  TextEditingController _phoneFieldController = TextEditingController();
-  TextEditingController _passwordFieldController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();//initialize the global form key
+  TextEditingController _usernameFieldController = TextEditingController();//initialize the username controller
+  TextEditingController _regNumFieldController = TextEditingController();//initialize the reg number controller
+  TextEditingController _emailFieldController = TextEditingController();//initialize the email controller
+  TextEditingController _phoneFieldController = TextEditingController();//initialize the phone controller
+  TextEditingController _passwordFieldController = TextEditingController();//initialize the password controller
   TextEditingController _confirmPasswordFieldController =
-      TextEditingController();
+      TextEditingController();//initialize the confirm password controller
 
-  String genderValue = '';
-  String errorMessage = '';
-  bool isPassword = false;
+  String genderValue = '';//initialize the gender
+  String errorMessage = '';//initialize error message
+  bool isPassword = false;//initialize if is password or not
 
-  Container _formButton() {
+  Container _formButton() {//method for create custom form button
     return Container(
       width: MediaQuery.of(context).size.width,
       height: 50,
@@ -55,13 +56,14 @@ class _RegisterState extends State<Register> {
     );
   }
 
+  //create account method
   createAccount() async {
-    String email = _emailFieldController.text.trim();
-    String password = _passwordFieldController.text;
-    String username = _usernameFieldController.text;
-    String phone = _phoneFieldController.text;
-    String regNumber = _regNumFieldController.text;
-    String confirmPassword = _confirmPasswordFieldController.text;
+    String email = _emailFieldController.text.trim();//get the value of email
+    String password = _passwordFieldController.text;//get the value of password
+    String username = _usernameFieldController.text;//get the value of username
+    String phone = _phoneFieldController.text;//get the value of phone 
+    String regNumber = _regNumFieldController.text;//get the value of reg number
+    String confirmPassword = _confirmPasswordFieldController.text;//get the value confirm password
 
     if (password != confirmPassword) {
       print('retype password, passwords do not match');
@@ -69,8 +71,8 @@ class _RegisterState extends State<Register> {
     }
 
     try {
-      String userId = await _auth.signUp(email, password);
-
+      String userId = await _auth.signUp(email, password);//get user id of current user
+      //initialize and set user model 
       User user = User();
       user.userId = userId;
       user.username = username;
@@ -79,21 +81,21 @@ class _RegisterState extends State<Register> {
       user.regNumber = regNumber;
       user.gender = '';
       user.img = '';
-
+      //store user model to firestore as profile
       await _ref.document(userId).setData(user.toJson());
       // Navigator.pop(context, 'Account was successfully created');
-      FirebaseUser firebaseUser = await _auth.getCurrentUser();
+      FirebaseUser firebaseUser = await _auth.getCurrentUser();//get the current user
       print('Response: $user');
       DocumentSnapshot doc =
           await _firestore.document('/users/${firebaseUser.uid}').get();
-
+  //navigate to home and passing user object 
       Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) =>
                 Home(user: User.fromDocument(doc.data, doc.documentID))),
       );
-    } catch (e) {
+    } catch (e) {//catches errors
       setState(() {
         errorMessage = e.message;
       });
@@ -102,7 +104,7 @@ class _RegisterState extends State<Register> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {//build method contains codes for UI creation
     return Scaffold(
       appBar: AppBar(
         title: Text(

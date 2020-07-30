@@ -1,20 +1,24 @@
+//importing material package
+import 'package:flutter/material.dart';
+//importing firebase auth and firestore
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
+//import the auth helper class
 import '../helpers/authentication.dart';
+//import the user model class
 import '../models/user.dart';
-
+//importing the necessary screen 
 import 'home.dart';
 import 'login.dart';
 import 'register.dart';
 
-BaseAuth _auth = Auth();
-Firestore _firestore = Firestore.instance;
+BaseAuth _auth = Auth();//initialize the auth base class
+Firestore _firestore = Firestore.instance;//initialze firestore
 
 class Welcome extends StatefulWidget {
   Welcome({Key key, this.title}) : super(key: key);
   final String title;
-  static const String routeName = '/welcome';
+  static const String routeName = '/welcome';//route name constant
   @override
   _WelcomeState createState() => _WelcomeState();
 }
@@ -22,10 +26,10 @@ class Welcome extends StatefulWidget {
 class _WelcomeState extends State<Welcome> {
   @override
   void initState() {
-    _auth.getCurrentUser().then((value) => print('firebase user $value'));
+    _auth.getCurrentUser().then((value) => print('firebase user $value'));//get the current logged in user
     super.initState();
   }
-
+  //method to open the login screen
   void _signIn(context) {
     Navigator.push(
       context,
@@ -33,19 +37,21 @@ class _WelcomeState extends State<Welcome> {
     );
   }
 
+  //method to open the create account screen
   void _createAccount(context) {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => Register()),
     );
   }
-
+  //method to open the home screen
   void _openHome(context) async {
-    FirebaseUser user = await _auth.getCurrentUser();
+    FirebaseUser user = await _auth.getCurrentUser();//gets the current logged user
         print('uid $user');
         DocumentSnapshot doc =
-            await _firestore.document('/users/${user.uid}').get();
+            await _firestore.document('/users/${user.uid}').get();//get the user profile data from firestore
         print('data ${doc.data}');
+        //method to navigate to home
         await Navigator.push(
           context,
           MaterialPageRoute(
@@ -58,15 +64,15 @@ class _WelcomeState extends State<Welcome> {
   Widget build(BuildContext context) {
     return buildWelcome(context);
   }
-
+  //Widget that create the UI for welcome screen
   buildWelcome(context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
+      backgroundColor: Theme.of(context).primaryColor,//set the background color
       body: Container(
         child: FutureBuilder(
           future: _auth.getCurrentUser(),
           builder: (context, snapshot) {
-            if (snapshot.data == null) {
+            if (snapshot.data == null) {//this checks if the user is not logged in
               return Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -130,7 +136,7 @@ class _WelcomeState extends State<Welcome> {
                   ),
                 ],
               );
-            } else {
+            } else {//else show a different UI
               return Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,

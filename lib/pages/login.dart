@@ -1,15 +1,21 @@
+//import firebase auth and firestore
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+//importing material package
 import 'package:flutter/material.dart';
+//the firebase auth helper
 import '../helpers/authentication.dart';
+//importing user model
 import '../models/user.dart';
+//import screens to navigate
 import '../pages/forgot-password.dart';
 import '../pages/home.dart';
 import '../pages/register.dart';
+//importing custom formField widget
 import '../widgets/formField.dart';
 
-BaseAuth _auth = Auth();
-Firestore _firestore = Firestore.instance;
+BaseAuth _auth = Auth();//initialize the auth base class
+Firestore _firestore = Firestore.instance;//initialze firestore
 
 class Login extends StatefulWidget {
   static const String routeName = '/login';
@@ -18,25 +24,25 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  bool isAuthenticating = false;
-  final _formKey = GlobalKey<FormState>();
-  TextEditingController _emailFieldController = TextEditingController();
-  TextEditingController _passwordFieldController = TextEditingController();
+  bool isAuthenticating = false; //initialize setting for isAuthenticating
+  final _formKey = GlobalKey<FormState>(); //initializeglobal form key 
+  TextEditingController _emailFieldController = TextEditingController();//initialize controller for email
+  TextEditingController _passwordFieldController = TextEditingController();//initialize controller for password
 
-  String errorMessage = ''; 
+  String errorMessage = ''; //initialize variable for reading errors
 
   @override
   void initState() {
     super.initState();
   }
-
+  //method to navigate to create account screen
   void _createAccount(context) {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => Register()),
     );
   }
-
+  //method for custom button
   Container _formButton({Function onPressed, String text}) {
     return Container(
       width: MediaQuery.of(context).size.width,
@@ -57,40 +63,41 @@ class _LoginState extends State<Login> {
       ),
     );
   }
-
+  //method for logging in
   login() async {
     setState(() {
-      isAuthenticating = true;
+      isAuthenticating = true; //set the isAuthenticating to true to show progress
     });
-    String email = _emailFieldController.text.trim();
-    String password = _passwordFieldController.text;
+    String email = _emailFieldController.text.trim();//get the value of email
+    String password = _passwordFieldController.text;//get the value of password
 
-    if (_formKey.currentState.validate()) {
+  //validating the form
+    if (_formKey.currentState.validate()) {//if validate
       print('signing in...');
       try {
-        String response = await _auth.signIn(email, password);
-        FirebaseUser user = await _auth.getCurrentUser();
+        String response = await _auth.signIn(email, password);//call firebase auth
+        FirebaseUser user = await _auth.getCurrentUser();//get the current user
         print('Response: $response uid $user');
         DocumentSnapshot doc =
-            await _firestore.document('/users/${user.uid}').get();
+            await _firestore.document('/users/${user.uid}').get();//get the user profile
         print('data ${doc.data}');
-        await Navigator.push(
+        await Navigator.push(//navigate to home screen
           context,
           MaterialPageRoute(
               builder: (context) =>
                   Home(user: User.fromDocument(doc.data, doc.documentID))),
         );
         setState(() {
-          isAuthenticating = false;
+          isAuthenticating = false;//set the isAuthenticating to false, to hide progress
         });
-      } catch (e) {
+      } catch (e) {//catch clause to handle errors encountered while performing operations
         print('Error: $e');
         setState(() {
           isAuthenticating = false;
           errorMessage = e.message;
         });
       }
-    } else {
+    } else {//if validation fails
       print('validation required');
     }
   }

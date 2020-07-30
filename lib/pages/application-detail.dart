@@ -1,13 +1,18 @@
+//import dart io package for file handling
 import 'dart:io';
-
+//import the material package
 import 'package:flutter/material.dart';
+//import image gallery saver lib
 import 'package:image_gallery_saver/image_gallery_saver.dart';
-import '../models/application.dart';
-import '../widgets/mainHeader.dart';
+//import screenshot lib
 import 'package:screenshot/screenshot.dart';
+//import application model package
+import '../models/application.dart';
+//import main header package
+import '../widgets/mainHeader.dart';
 
 class ApplicationDetail extends StatefulWidget {
-  static const String routeName = '/application-detail';
+  static const String routeName = '/application-detail';//constant for screen navigator route name
   ApplicationDetail({Key key}) : super(key: key);
 
   @override
@@ -16,8 +21,8 @@ class ApplicationDetail extends StatefulWidget {
 
 class _ApplicationDetailState extends State<ApplicationDetail> {
   Application application;
-  File _imageFile;
-  ScreenshotController _screenshotController = ScreenshotController();
+  File _imageFile;//initantiate the image file
+  ScreenshotController _screenshotController = ScreenshotController();//initialize screenshot 
 
   @override
   void initState() {
@@ -213,7 +218,7 @@ class _ApplicationDetailState extends State<ApplicationDetail> {
           child: Icon(Icons.add_a_photo)),
     );
   }
-
+  //method for saving image
   _saveImage(String name, File image) async {
     final result = await ImageGallerySaver.saveImage(
       image.readAsBytesSync(),

@@ -1,4 +1,6 @@
+//importing the material package
 import 'package:flutter/material.dart';
+//importing course model
 import '../models/course.dart';
 
 class GradeField extends StatefulWidget {
@@ -6,7 +8,7 @@ class GradeField extends StatefulWidget {
     Key key,
     this.course,
   }) : super(key: key);
-  Course course;
+  final Course course;
 
   @override
   _GradeFieldState createState() => _GradeFieldState();
