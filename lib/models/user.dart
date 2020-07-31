@@ -25,6 +25,7 @@ class User {
     user.email = snapshot['email'];
     user.gender = snapshot['gender'];
     user.regNumber = snapshot['reg_number'];
+    user.phone = snapshot['phone'];
     return user;
   }
 
@@ -36,6 +37,7 @@ class User {
       "phone": phone,
       "reg_number": regNumber,
       "gender": gender,
+      "phone": phone,
       "img": img,
     };
   }

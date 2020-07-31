@@ -30,34 +30,34 @@ class _AdmissionPortalState extends State<AdmissionPortal> {
   void initState() {
     super.initState();
 
-    courseList.add(Course(subject: 'Mathematics', score: '90', grade: 'A'));
-    courseList.add(Course(subject: 'English', score: '67', grade: 'B'));
-    courseList.add(Course(subject: 'Biology', score: '90', grade: 'A'));
-    courseList.add(Course(subject: 'Chemistry', score: '67', grade: 'B'));
-    courseList.add(Course(subject: 'Physics', score: '50', grade: 'C'));
-    courseList.add(Course(subject: 'Agricultural Science', score: '67', grade: 'B'));
-    courseList.add(Course(subject: 'Geography', score: '80', grade: 'A'));
-    courseList.add(Course(subject: 'Economics', score: '66', grade: 'B'));
-    
-    result.score = 220;
-    user.username = 'Uchechi Akwarandu';
-    user.email = 'uche24@hotmail.co.uk';
-    user.gender = 'Male';
-    user.userId = '234232lljldajdsljfasdfadf';
-    user.phone = '098765431';
-    university.name = 'Abia State University';
-    university.accronym = 'ABSU';
-    university.founded = '1981';
-    university.image =
-        'https://firebasestorage.googleapis.com/v0/b/burkman-984c6.appspot.com/o/absu.png?alt=media&token=76ffdb9e-3471-4df9-926d-ea5d0b7136d9';
-    result.university = university;
-
-    applicationList.add(new Application(
-      courses: courseList,
-      result: result,
-      university: university,
-      user: user,
-    ));
+//    courseList.add(Course(subject: 'Mathematics', score: '90', grade: 'A'));
+//    courseList.add(Course(subject: 'English', score: '67', grade: 'B'));
+//    courseList.add(Course(subject: 'Biology', score: '90', grade: 'A'));
+//    courseList.add(Course(subject: 'Chemistry', score: '67', grade: 'B'));
+//    courseList.add(Course(subject: 'Physics', score: '50', grade: 'C'));
+//    courseList.add(Course(subject: 'Agricultural Science', score: '67', grade: 'B'));
+//    courseList.add(Course(subject: 'Geography', score: '80', grade: 'A'));
+//    courseList.add(Course(subject: 'Economics', score: '66', grade: 'B'));
+//
+//    result.score = 220;
+//    user.username = 'Uchechi Akwarandu';
+//    user.email = 'uche24@hotmail.co.uk';
+//    user.gender = 'Male';
+//    user.userId = '234232lljldajdsljfasdfadf';
+//    user.phone = '098765431';
+//    university.name = 'Abia State University';
+//    university.accronym = 'ABSU';
+//    university.founded = '1981';
+//    university.image =
+//        'https://firebasestorage.googleapis.com/v0/b/burkman-984c6.appspot.com/o/absu.png?alt=media&token=76ffdb9e-3471-4df9-926d-ea5d0b7136d9';
+//    result.university = university;
+//
+//    applicationList.add(new Application(
+//      courses: courseList,
+//      result: result,
+//      university: university,
+//      user: user,
+//    ));
   }
   //method for presenting and displaying each item on the listview
   _applicationItem(context, index, list) {

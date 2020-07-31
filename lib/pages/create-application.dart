@@ -1,5 +1,12 @@
 //importing material package
+import 'package:Burkman/models/user.dart';
+import 'package:Burkman/widgets/scoreField.dart';
 import 'package:flutter/material.dart';
+//import firebase auth and firestore
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+//the firebase auth helper
+import '../helpers/authentication.dart';
 //importing course, entry, result model
 import '../models/course.dart';
 import '../models/entry.dart';
@@ -12,6 +19,11 @@ import '../widgets/gradeField.dart';
 import '../widgets/mainHeader.dart';
 import '../widgets/subjectField.dart';
 
+BaseAuth _auth = Auth(); //initialize the auth base class
+Firestore _firestore = Firestore.instance; //initialze firestore
+CollectionReference userRef =
+    _firestore.collection('/users'); //initialize users collection
+
 class CreateApplication extends StatefulWidget {
   static const String routeName = '/createApplication';
   CreateApplication({Key key}) : super(key: key);
@@ -21,22 +33,21 @@ class CreateApplication extends StatefulWidget {
 }
 
 class _CreateApplicationState extends State<CreateApplication> {
-  TextEditingController _regNumberFieldController = TextEditingController();//initialize the reg number controller
-  TextEditingController _emailFieldController = TextEditingController();//initialize email controller
-  TextEditingController _phoneFieldController = TextEditingController();//initialize phone controller
+  TextEditingController _regNumberFieldController =
+      TextEditingController(); //initialize the reg number controller
+  TextEditingController _emailFieldController =
+      TextEditingController(); //initialize email controller
+  TextEditingController _phoneFieldController =
+      TextEditingController(); //initialize phone controller
+  List<TextEditingController> _scoreFieldControllers =
+      <TextEditingController>[]; //initialise score field array
 
-  List<TextEditingController> _scoreFieldControllers = <TextEditingController>[];//initialise score field array
-
-  List<Entry> entryList = List();//initialize entry list 
-  List<Course> rowList = List();// initialize row list
+  List<Entry> entryList = List(); //initialize entry list
+  List<Course> rowList = List(); // initialize row list
 
   String title = '';
   String _selectedEntry = '';
-  // final entries = [
-  //   'WASSCE',
-  //   'NECO',
-  //   'GCE',
-  // ];
+
   int _entryIndex = 0;
   int applicationIndex = 0;
   List<String> appTitle = [
@@ -57,7 +68,8 @@ class _CreateApplicationState extends State<CreateApplication> {
     _selectedEntry = entryList[0].name;
   }
 
-  _buildCreateApplication(Result result) {//method to create application based on application index position
+  _buildCreateApplication(Result result) {
+    //method to create application based on application index position
     switch (applicationIndex) {
       case 0:
         return _buildPersonalInfo();
@@ -71,6 +83,12 @@ class _CreateApplicationState extends State<CreateApplication> {
         return Text('building Screens');
     }
   }
+
+  getCurrentUser() async {
+    var user = await _auth.getCurrentUser();
+    return user;
+  }
+
   //method to show screen if submitted
   _buildSubmitted() {
     return Center(
@@ -104,6 +122,7 @@ class _CreateApplicationState extends State<CreateApplication> {
       ),
     );
   }
+
   //method to preview application before submiting
   _buildPreviewInfo(Result result) {
     return Column(
@@ -441,6 +460,7 @@ class _CreateApplicationState extends State<CreateApplication> {
       ],
     );
   }
+
   //method to show UI for inputing and handling O'level
   _buildOlevel() {
     return Column(
@@ -507,9 +527,16 @@ class _CreateApplicationState extends State<CreateApplication> {
                             if (newEntries.length == 0) {
                               entryList.add(
                                 Entry(
-                                    entryIndex: _entryIndex,
-                                    name: _selectedEntry,
-                                    courses: []),
+                                  entryIndex: _entryIndex,
+                                  name: _selectedEntry,
+                                  courses: [
+                                    Course(
+                                      subject: '',
+                                      score: '',
+                                      grade: '',
+                                    ),
+                                  ],
+                                ),
                               );
                             }
                           });
@@ -556,7 +583,8 @@ class _CreateApplicationState extends State<CreateApplication> {
                                     ),
                                   ),
                                   SingleChildScrollView(
-                                                     scrollDirection: Axis.horizontal,                 child: DataTable(
+                                    scrollDirection: Axis.horizontal,
+                                    child: DataTable(
                                       columns: <DataColumn>[
                                         DataColumn(
                                           label: Text(
@@ -588,9 +616,9 @@ class _CreateApplicationState extends State<CreateApplication> {
                                             onPressed: () {
                                               setState(() {
                                                 Course course = new Course();
-                                                course.subject = 'Physics';
-                                                course.grade = 'B';
-                                                course.score = '66';
+                                                course.subject = '';
+                                                course.grade = '';
+                                                course.score = '';
                                                 entryList[entry.entryIndex]
                                                     .courses
                                                     .add(course);
@@ -603,12 +631,17 @@ class _CreateApplicationState extends State<CreateApplication> {
                                           ? entry.courses.map((row) {
                                               int index =
                                                   entry.courses.indexOf(row);
-                                              TextEditingController _controller = new TextEditingController();
+                                              
                                               print('courses entry $index');
                                               return DataRow(cells: <DataCell>[
                                                 DataCell(
-                                                  SubjectField(course: row)),
-                                                DataCell(_addScoreField(_controller, row)),
+                                                    SubjectField(course: row)),
+                                                DataCell(
+                                                  ScoreField(
+                                                    
+                                                    course: row,
+                                                  ),
+                                                ),
                                                 DataCell(
                                                     GradeField(course: row)),
                                                 DataCell(
@@ -661,9 +694,14 @@ class _CreateApplicationState extends State<CreateApplication> {
                   color: Theme.of(context).accentColor,
                   child: Text('Next'),
                   onPressed: () {
-                    setState(() {
-                      applicationIndex = 2;
-                    });
+                    if (entryList.length > 0) {
+                      
+                      setState(() {
+                        applicationIndex = 2;
+                      });
+                    } else {
+                      print('entrylist is empty');
+                    }
                   },
                 ),
               ),
@@ -674,131 +712,117 @@ class _CreateApplicationState extends State<CreateApplication> {
     );
   }
 
+  Future<DocumentSnapshot> getUserBio() async {
+    FirebaseUser user =
+        await _auth.getCurrentUser(); //gets the current logged user
+    return _firestore.document('/users/${user.uid}').get();
+  }
+
   //method for personal bio data
   _buildPersonalInfo() {
-    return Column(
-      children: <Widget>[
-        Expanded(
-          child: ListView(
-            shrinkWrap: true,
+    //get the user profile data from firestore
+    return FutureBuilder<DocumentSnapshot>(
+      future: getUserBio(),
+      builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+        if (snapshot.hasData) {
+          var doc = snapshot.data;
+          User userDoc = User.fromDocument(doc.data, doc.documentID);
+          return Column(
             children: <Widget>[
-              Container(
-                padding: EdgeInsets.all(8.0),
-                decoration: BoxDecoration(
-                  color: Colors.amber.withOpacity(.5),
-                ),
-                child: Text(
-                  'We hope you are keeping safe due to coronavirus pandemic our management might be slow. just bear with use, we will reply as soon as we can. thank you!',
-                  style: TextStyle(
-                    fontSize: 14.0,
-                  ),
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.all(16.0),
-                child: Column(
+              Expanded(
+                child: ListView(
+                  shrinkWrap: true,
                   children: <Widget>[
-                    Text(
-                      'Apply for Admission',
-                      style: TextStyle(
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
                     Container(
-                      margin: EdgeInsets.only(
-                        top: 8,
-                      ),
-                      padding: EdgeInsets.all(8),
+                      padding: EdgeInsets.all(8.0),
                       decoration: BoxDecoration(
-                        color: Colors.redAccent,
+                        color: Colors.amber.withOpacity(.5),
                       ),
                       child: Text(
-                        'errors to display when input validation goes wrong or is thrown',
+                        'We hope you are keeping safe due to coronavirus pandemic our management might be slow. just bear with use, we will reply as soon as we can. thank you!',
                         style: TextStyle(
-                          fontStyle: FontStyle.italic,
-                          color: Colors.white,
+                          fontSize: 14.0,
                         ),
                       ),
                     ),
-                    formField(
-                        controller: _regNumberFieldController,
-                        icon: Icon(Icons.confirmation_number),
-                        text: 'Registration Number',
-                        validationText:
-                            'Please enter a valid registration number!'),
-                    formField(
-                        controller: _emailFieldController,
-                        icon: Icon(Icons.confirmation_number),
-                        text: 'Email Address',
-                        validationText:
-                            'Please enter a valid registration number!'),
-                    formField(
-                        controller: _phoneFieldController,
-                        icon: Icon(Icons.confirmation_number),
-                        text: 'Phone Number',
-                        validationText:
-                            'Please enter a valid registration number!'),
-                    Padding(
-                      padding: EdgeInsets.all(10),
+                    Container(
+                      padding: EdgeInsets.all(16.0),
+                      child: Column(
+                        children: <Widget>[
+                          Text(
+                            'Apply for Admission',
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          formField(
+                              value: userDoc.regNumber,
+                              controller: _regNumberFieldController,
+                              icon: Icon(Icons.confirmation_number),
+                              text: 'Registration Number',
+                              validationText:
+                                  'Please enter a valid registration number!'),
+                          formField(
+                              value: userDoc.email,
+                              controller: _emailFieldController,
+                              icon: Icon(Icons.confirmation_number),
+                              text: 'Email Address',
+                              validationText:
+                                  'Please enter a valid registration number!'),
+                          formField(
+                              value: userDoc.phone,
+                              controller: _phoneFieldController,
+                              icon: Icon(Icons.confirmation_number),
+                              text: 'Phone Number',
+                              validationText:
+                                  'Please enter a valid registration number!'),
+                          Padding(
+                            padding: EdgeInsets.all(10),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 8, horizontal: 16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text(''),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: FlatButton(
+                        color: Theme.of(context).accentColor,
+                        child: Text('Next'),
+                        onPressed: () {
+                          setState(() {
+                            applicationIndex = 1;
+                          });
+                        },
+                      ),
                     ),
                   ],
                 ),
               ),
             ],
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Text(''),
-              Align(
-                alignment: Alignment.centerRight,
-                child: FlatButton(
-                  color: Theme.of(context).accentColor,
-                  child: Text('Next'),
-                  onPressed: () {
-                    setState(() {
-                      applicationIndex = 1;
-                    });
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-  
-  //method for generating score field
-  _addScoreField(TextEditingController controller, Course course) {
-    return Container(
-      padding: EdgeInsets.all(4),
-      margin: EdgeInsets.all(4),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(width: 1, color: Colors.grey),
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: TextFormField(
-        decoration: InputDecoration(border: InputBorder.none, contentPadding: const EdgeInsets.symmetric(horizontal: 10) ),
-        onChanged: (value) {
-          setState(() {
-            course.score = value;
-          });
-        },
-        controller: controller,
-        keyboardType: TextInputType.text,
-      ),
+          );
+        } else {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+      },
     );
   }
 
   @override
   Widget build(BuildContext context) {
     Result result = ModalRoute.of(context).settings.arguments;
+    print('creating application: ${result.score}');
     setState(() {
       title = appTitle[applicationIndex];
     });
