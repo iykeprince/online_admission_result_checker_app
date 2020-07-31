@@ -1,4 +1,5 @@
 //importing material package
+import 'package:Burkman/models/application.dart';
 import 'package:Burkman/models/user.dart';
 import 'package:Burkman/widgets/scoreField.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +24,8 @@ BaseAuth _auth = Auth(); //initialize the auth base class
 Firestore _firestore = Firestore.instance; //initialze firestore
 CollectionReference userRef =
     _firestore.collection('/users'); //initialize users collection
+CollectionReference applicationRef =
+    _firestore.collection('/applications'); //initialize application collection
 
 class CreateApplication extends StatefulWidget {
   static const String routeName = '/createApplication';
@@ -448,6 +451,11 @@ class _CreateApplicationState extends State<CreateApplication> {
                   child: Text('Submit'),
                   onPressed: () {
                     //submit to firebase
+                    Application newApplication = Application();
+                    newApplication.university = result.university;
+                    newApplication.result = result;
+                    newApplication.user = result.user;
+                    applicationRef.add(newApplication.toJson());
                     setState(() {
                       applicationIndex = 3;
                     });
@@ -631,14 +639,13 @@ class _CreateApplicationState extends State<CreateApplication> {
                                           ? entry.courses.map((row) {
                                               int index =
                                                   entry.courses.indexOf(row);
-                                              
+
                                               print('courses entry $index');
                                               return DataRow(cells: <DataCell>[
                                                 DataCell(
                                                     SubjectField(course: row)),
                                                 DataCell(
                                                   ScoreField(
-                                                    
                                                     course: row,
                                                   ),
                                                 ),
@@ -695,7 +702,6 @@ class _CreateApplicationState extends State<CreateApplication> {
                   child: Text('Next'),
                   onPressed: () {
                     if (entryList.length > 0) {
-                      
                       setState(() {
                         applicationIndex = 2;
                       });

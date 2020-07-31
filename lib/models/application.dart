@@ -33,4 +33,14 @@ class Application {
         .map((course) => Course.fromDocument(course, course.course_id)));
     return application;
   }
+
+  toJson() {
+    return {  
+      "application_id": id,
+      "university": university,
+      "user": user,
+      "courses": courses,
+      "result": result,
+    };
+  }
 }
