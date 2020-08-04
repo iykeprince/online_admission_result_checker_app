@@ -5,12 +5,10 @@ import 'dart:io';
 import 'package:Burkman/models/entry.dart';
 import 'package:flutter/material.dart';
 //import image gallery saver lib
-import 'package:image_gallery_saver/image_gallery_saver.dart';
+// import 'package:image_gallery_saver/image_gallery_saver.dart';
 //import screenshot lib
 import 'package:screenshot/screenshot.dart';
-import 'package:simple_permissions/simple_permissions.dart';
-//import application model package
-import '../models/application.dart';
+// import 'package:simple_permissions/simple_permissions.dart';
 //import main header package
 import '../widgets/mainHeader.dart';
 
@@ -32,19 +30,19 @@ class _ApplicationDetailState extends State<ApplicationDetail> {
   @override
   void initState() {
     super.initState();
-    _requestWritePermission();
+    // _requestWritePermission();
   }
 
   _requestWritePermission() async {
-    PermissionStatus permissionStatus =
-        await SimplePermissions.requestPermission(
-            Permission.WriteExternalStorage);
+    // PermissionStatus permissionStatus =
+    //     await SimplePermissions.requestPermission(
+    //         Permission.WriteExternalStorage);
 
-    if (permissionStatus == PermissionStatus.authorized) {
-      setState(() {
-        _allowWriteFile = true;
-      });
-    }
+    // if (permissionStatus == PermissionStatus.authorized) {
+    //   setState(() {
+    //     _allowWriteFile = true;
+    //   });
+    // }
   }
 
   @override
@@ -261,14 +259,14 @@ class _ApplicationDetailState extends State<ApplicationDetail> {
 
   //method for saving image
   _saveImage(String name, File image) async {
-    try {
-      final result = await ImageGallerySaver.saveImage(
-        image.readAsBytesSync(),
-        name: name,
-      );
-      print('File is saved $result');
-    } catch (error) {
-      print('file error: $error');
-    }
+    // try {
+    //   final result = await Image(
+    //     image.readAsBytesSync(),
+    //     name: name,
+    //   );
+    //   print('File is saved $result');
+    // } catch (error) {
+    //   print('file error: $error');
+    // }
   }
 }
