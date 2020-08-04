@@ -1,4 +1,8 @@
+import 'dart:convert';
 //importing material package
+import 'package:Burkman/helpers/authentication.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 //import application, course, result, user and university model
 import '../models/application.dart';
@@ -9,8 +13,15 @@ import '../models/user.dart';
 //import the application-detail screen
 import 'application-detail.dart';
 
+BaseAuth _auth = Auth(); //initialize the auth base class
+Firestore _firestore = Firestore.instance; //initialze firestore
+
+CollectionReference applicationRef =
+    _firestore.collection('/applications'); //initialize application collection
+
 class AdmissionPortal extends StatefulWidget {
-  static const String routeName = '/admissionPortal';//constant admission portal screen route
+  static const String routeName =
+      '/admissionPortal'; //constant admission portal screen route
 
   AdmissionPortal({Key key}) : super(key: key);
 
@@ -19,116 +30,107 @@ class AdmissionPortal extends StatefulWidget {
 }
 
 class _AdmissionPortalState extends State<AdmissionPortal> {
-  List<Application> applicationList = List();//initialize application list
 
-  List<Course> courseList = List();//initialize course list
-  Result result = Result();//initialize result object
-  User user = User();//initialize user object
-  University university = University();//initialize university object
+  List<Course> courseList = List(); //initialize course list
+  Result result = Result(); //initialize result object
+  User user = User(); //initialize user object
+  University university = University(); //initialize university object
+
+  Future<QuerySnapshot> getApplications() async {
+    FirebaseUser user = await _auth.getCurrentUser();
+    return await applicationRef
+        .where('user.user_id', isEqualTo: user.uid)
+        .getDocuments();
+  }
 
   @override
   void initState() {
     super.initState();
-
-//    courseList.add(Course(subject: 'Mathematics', score: '90', grade: 'A'));
-//    courseList.add(Course(subject: 'English', score: '67', grade: 'B'));
-//    courseList.add(Course(subject: 'Biology', score: '90', grade: 'A'));
-//    courseList.add(Course(subject: 'Chemistry', score: '67', grade: 'B'));
-//    courseList.add(Course(subject: 'Physics', score: '50', grade: 'C'));
-//    courseList.add(Course(subject: 'Agricultural Science', score: '67', grade: 'B'));
-//    courseList.add(Course(subject: 'Geography', score: '80', grade: 'A'));
-//    courseList.add(Course(subject: 'Economics', score: '66', grade: 'B'));
-//
-//    result.score = 220;
-//    user.username = 'Uchechi Akwarandu';
-//    user.email = 'uche24@hotmail.co.uk';
-//    user.gender = 'Male';
-//    user.userId = '234232lljldajdsljfasdfadf';
-//    user.phone = '098765431';
-//    university.name = 'Abia State University';
-//    university.accronym = 'ABSU';
-//    university.founded = '1981';
-//    university.image =
-//        'https://firebasestorage.googleapis.com/v0/b/burkman-984c6.appspot.com/o/absu.png?alt=media&token=76ffdb9e-3471-4df9-926d-ea5d0b7136d9';
-//    result.university = university;
-//
-//    applicationList.add(new Application(
-//      courses: courseList,
-//      result: result,
-//      university: university,
-//      user: user,
-//    ));
   }
+
   //method for presenting and displaying each item on the listview
-  _applicationItem(context, index, list) {
-    final Application item = list[index];
-    print('application list size: ${list.length}');
-    return ListTile(
-      contentPadding: EdgeInsets.all(4),
-      title: Text(
-        item.university.name,
-        style: TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 15.0,
-          color: Colors.black,
+  _applicationItem(context, index, docs) {
+    final DocumentSnapshot documentSnapshot = docs[index];
+    Map<String, dynamic> doc = documentSnapshot.data;
+
+    return Column(
+      children: <Widget>[
+        ListTile(
+          contentPadding: EdgeInsets.all(4),
+          leading: Container(
+            padding: const EdgeInsets.all(4),
+            child: Image.network('${doc['university']['image']}'),),
+          title: Text(
+            '${doc['university']['name']}',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 15.0,
+              color: Colors.black,
+            ),
+          ),
+          subtitle: Text('Score: ${doc['result']['score']}'),
+          trailing: FlatButton.icon(
+            icon: Icon(
+              Icons.arrow_right,
+            ),
+            label: Text('Detail'),
+            onPressed: () {
+              Navigator.pushNamed(
+                context,
+                ApplicationDetail.routeName,
+                arguments: doc,
+              );
+            },
+          ),
         ),
-      ),
-      subtitle: Text('Score: ${item.result.score}'),
-      trailing: FlatButton.icon(
-        icon: Icon(
-          Icons.arrow_right,
-        ),
-        label: Text('Detail'),
-        onPressed: () {
-          Navigator.pushNamed(
-            context,
-            ApplicationDetail.routeName,
-            arguments: item,
-          );
-        },
-      ),
+        Divider(),
+      ],
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    print('application length ${applicationList.length}');
     return Container(
       padding: EdgeInsets.all(10.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            'View Applications',
-            style: TextStyle(
-              fontSize: 18.0,
-            ),
-          ),
-          Divider(),
-          applicationList.length == 0
-              ? Center(
-                  child: Text(
-                    'No application submitted yet!',
-                    style: TextStyle(
-                      fontSize: 22.0,
-                      fontWeight: FontWeight.normal,
-                    ),
-                  ),
-                )
-              : Container(
-                  height: 300,
-                  child: ListView.builder(
-                    itemCount: applicationList.length,
-                    itemBuilder: (context, index) => _applicationItem(
-                      context,
-                      index,
-                      applicationList,
-                    ),
-                    scrollDirection: Axis.vertical,
-                  ),
-                )
-        ],
+      child: FutureBuilder<QuerySnapshot>(
+        future: getApplications(),
+        builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.hasData) {
+            // print('data: ${snapshot.data.documents[0].data}');
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                snapshot.data.documents.length == 0
+                    ? Center(
+                        child: Text(
+                          'No application submitted yet!',
+                          style: TextStyle(
+                            fontSize: 22.0,
+                            fontWeight: FontWeight.normal,
+                          ),
+                        ),
+                      )
+                    : Container(
+                        height: 300,
+                        child: ListView.builder(
+                          itemCount: snapshot.data.documents.length,
+                          itemBuilder: (context, index) => _applicationItem(
+                            context,
+                            index,
+                            snapshot.data.documents,
+                          ),
+                          scrollDirection: Axis.vertical,
+                        ),
+                      ),
+              ],
+            );
+          } else {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        },
       ),
     );
   }

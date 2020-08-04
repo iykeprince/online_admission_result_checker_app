@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 import 'university.dart';
 import 'user.dart';
 
@@ -11,12 +9,17 @@ class Result {
 
   Result({this.user, this.university, this.score});
 
-  factory Result.fromDocument(DocumentSnapshot snapshot, String id) {
+  factory Result.fromMap(Map<String, dynamic> snapshot) {
     Result result = Result();
-    result.id = id;
-    result.user = snapshot['user'];
-    result.university = snapshot['university'];
+    result.id = snapshot['id'];
     result.score = snapshot['score'];
     return result;
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      "id": id,
+      "score": score,
+    };
   }
 }

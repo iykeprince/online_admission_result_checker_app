@@ -12,13 +12,23 @@ class Course {
     this.grade,
   });
 
-  factory Course.fromDocument(DocumentSnapshot snapshot, String id) {
+
+  factory Course.fromMap(Map<String, dynamic> map) {
     Course course = Course();
-    course.id = snapshot['id'];
-    course.subject = snapshot['subject'];
-    course.score = snapshot['score'];
-    course.grade = snapshot['grade'];
+    course.id = map['id'];
+    course.subject = map['subject'];
+    course.score = map['score'];
+    course.grade = map['grade'];
     return course;
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'subject': subject,
+      'score': score,
+      'grade': grade,
+    };
   }
 
   @override

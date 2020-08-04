@@ -6,7 +6,7 @@ class SubjectField extends StatefulWidget {
     Key key,
     this.course,
   }) : super(key: key);
-  Course course;
+  final Course course;
   @override
   _SubjectFieldState createState() => _SubjectFieldState();
 }

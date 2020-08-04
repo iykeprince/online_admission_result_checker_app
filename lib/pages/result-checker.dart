@@ -21,7 +21,7 @@ class ResultChecker extends StatefulWidget {
   static const String routeName = '/resultChecker';//constant for screen navigation route
 //constructor contains logged in user object
   ResultChecker({Key key, this.user}) : super(key: key);
-  User user;
+  final User user;
 
   @override
   _ResultCheckerState createState() => _ResultCheckerState();
@@ -70,7 +70,7 @@ class _ResultCheckerState extends State<ResultChecker> {
                         String id =
                             querySnapshot.documents.elementAt(index).documentID;
                         University university =
-                            University.fromDocument(doc, id);
+                            University.fromMap(doc);
                         print('university image: ${university.image}');
                         return Padding(
                           padding: const EdgeInsets.only(top: 8.0),
@@ -205,7 +205,7 @@ class _ResultCheckerState extends State<ResultChecker> {
                           return;
                         }
 
-                        User student = User.fromDocument(
+                        User student = User.fromMap(
                             studentSnapshot.documents[0].data,
                             studentSnapshot.documents[0].documentID);
                         result = Result();

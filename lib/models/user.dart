@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class User {
   String userId;
@@ -17,8 +16,7 @@ class User {
       this.gender,
       this.img});
 
-  factory User.fromDocument(snapshot, String id) {
-    print('snapshot user: $snapshot');
+  factory User.fromMap(Map<String, dynamic> snapshot, String id) {
     User user = User();
     user.userId = id;
     user.username = snapshot['username'];
@@ -29,7 +27,7 @@ class User {
     return user;
   }
 
-  toJson() {
+  Map<String, dynamic> toMap() {
     return {
       "user_id": userId,
       "username": username,
@@ -37,7 +35,6 @@ class User {
       "phone": phone,
       "reg_number": regNumber,
       "gender": gender,
-      "phone": phone,
       "img": img,
     };
   }

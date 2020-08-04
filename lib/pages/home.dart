@@ -10,7 +10,7 @@ class Home extends StatefulWidget {
   static const String routeName = '/home';
   Home({Key key, this.user}) : super(key: key);
 
-  User user;//user object 
+  final User user;//user object 
 
   @override
   _HomeState createState() => _HomeState();
@@ -27,23 +27,6 @@ class _HomeState extends State<Home> {
   void initState() {
     _pageController = PageController(initialPage: pageIndex);//initialize the page view
     super.initState();
-  }
-  // method for opening admission portal
-  void _admissionPortal() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => AdmissionPortal(),
-      ),
-    );
-  }
-  // method for opening result checking
-  void _resultChecker() {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ResultChecker(),
-        ));
   }
 
   @override

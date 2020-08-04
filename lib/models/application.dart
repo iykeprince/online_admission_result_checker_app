@@ -1,46 +1,68 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 import 'course.dart';
+import 'entry.dart';
 import 'result.dart';
 import 'university.dart';
 import 'user.dart';
 
-class Application {
+class AppModel {
   String id;
 
   University university;
   User user;
   List<Course> courses;
   Result result;
+  List<Entry> entries;
 
-  Application({
+  AppModel({
+    this.id,
     this.university,
     this.user,
     this.courses,
     this.result,
+    this.entries,
   });
 
-  factory Application.fromDocument(DocumentSnapshot snapshot, String id) {
-    Application application = new Application();
-    application.id = id;
-    application.university = University.fromDocument(
-        snapshot['university'], snapshot['university'].university_id);
-    application.user =
-        User.fromDocument(snapshot['user'], snapshot['user'].user_id);
-    application.result =
-        Result.fromDocument(snapshot['result'], snapshot['result'].result_id);
-    application.courses = List<Course>.from(snapshot['courses']
-        .map((course) => Course.fromDocument(course, course.course_id)));
+  factory AppModel.fromMap(Map<String, dynamic> snapshot, String id) {
+    // print('inside application model: ${snapshot['university']}');
+    print('snapshot: ${snapshot['user']}');
+    AppModel application = new AppModel(
+      id: id,
+      university: University.fromMap(snapshot['university']),
+      result: Result.fromMap(snapshot['result']),
+      // entries: List.from((element) => Entry.fromMap(snapshot['entries'], snapshot['entries']['id'])),
+      user: User.fromMap(snapshot['user'], snapshot['user']['user_id'])
+    );
+    // application.id = id;
+
+    // application.university = University.fromMap(snapshot.);
+
+    // application.user = User.fromMap(
+    //   snapshot['user'],
+    //   snapshot['user']['user_id'],
+    // );
+
+    // application.entries = List<Entry>.from(
+    //   snapshot['entries'].map((entry) {
+    //     Entry.fromMap(
+    //       entry,
+    //       '09909090',
+    //     );
+    //     print('entry: ${entry.toString()}');
+    //   }),
+    // );
+
+    // application.result = Result.fromMap(
+    //   snapshot['result'],
+    // );
     return application;
   }
 
-  toJson() {
-    return {  
-      "application_id": id,
-      "university": university,
-      "user": user,
-      "courses": courses,
-      "result": result,
+  Map<String, dynamic> toJson() {
+    return {
+      "university": university.toMap(),
+      "user": user.toMap(),
+      "result": result.toMap(),
+      "entries": entries.map((entry) => entry.toMap()).toList(),
     };
   }
 }

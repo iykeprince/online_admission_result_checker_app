@@ -85,7 +85,7 @@ class _LoginState extends State<Login> {
           context,
           MaterialPageRoute(
               builder: (context) =>
-                  Home(user: User.fromDocument(doc.data, doc.documentID))),
+                  Home(user: User.fromMap(doc.data, doc.documentID))),
         );
         setState(() {
           isAuthenticating = false;//set the isAuthenticating to false, to hide progress

@@ -82,7 +82,7 @@ class _RegisterState extends State<Register> {
       user.gender = '';
       user.img = '';
       //store user model to firestore as profile
-      await _ref.document(userId).setData(user.toJson());
+      await _ref.document(userId).setData(user.toMap());
       // Navigator.pop(context, 'Account was successfully created');
       FirebaseUser firebaseUser = await _auth.getCurrentUser();//get the current user
       print('Response: $user');
@@ -93,7 +93,7 @@ class _RegisterState extends State<Register> {
         context,
         MaterialPageRoute(
             builder: (context) =>
-                Home(user: User.fromDocument(doc.data, doc.documentID))),
+                Home(user: User.fromMap(doc.data, doc.documentID))),
       );
     } catch (e) {//catches errors
       setState(() {

@@ -9,7 +9,8 @@ signout(context) async {
   Navigator.pop(context);
 }
 
-AppBar mainHeader(context, {User user = null, bool isTitle = false, String title = ''}) {
+AppBar mainHeader(context,
+    {User user, bool isTitle = false, String title = ''}) {
   return AppBar(
     centerTitle: true,
     leading: Text(''),

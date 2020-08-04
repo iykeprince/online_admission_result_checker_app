@@ -1,6 +1,7 @@
 //importing material package
 import 'package:Burkman/models/application.dart';
 import 'package:Burkman/models/user.dart';
+import 'package:Burkman/pages/home.dart';
 import 'package:Burkman/widgets/scoreField.dart';
 import 'package:flutter/material.dart';
 //import firebase auth and firestore
@@ -12,8 +13,6 @@ import '../helpers/authentication.dart';
 import '../models/course.dart';
 import '../models/entry.dart';
 import '../models/result.dart';
-//import admission-portal screen
-import '../pages/admission-portal.dart';
 //import custom widgets for form field, grade field, main header and subject field.
 import '../widgets/formField.dart';
 import '../widgets/gradeField.dart';
@@ -42,8 +41,6 @@ class _CreateApplicationState extends State<CreateApplication> {
       TextEditingController(); //initialize email controller
   TextEditingController _phoneFieldController =
       TextEditingController(); //initialize phone controller
-  List<TextEditingController> _scoreFieldControllers =
-      <TextEditingController>[]; //initialise score field array
 
   List<Entry> entryList = List(); //initialize entry list
   List<Course> rowList = List(); // initialize row list
@@ -117,7 +114,7 @@ class _CreateApplicationState extends State<CreateApplication> {
               child: Text('View Application'),
               color: Theme.of(context).accentColor,
               onPressed: () {
-                //TODO: push to home..
+                Navigator.popAndPushNamed(context, Home.routeName);
               },
             ),
           ],
@@ -127,6 +124,8 @@ class _CreateApplicationState extends State<CreateApplication> {
   }
 
   //method to preview application before submiting
+  String submitErrorMessage = '';
+  bool submitting = false;
   _buildPreviewInfo(Result result) {
     return Column(
       children: <Widget>[
@@ -315,6 +314,16 @@ class _CreateApplicationState extends State<CreateApplication> {
                   top: 10,
                 ),
               ),
+              submitErrorMessage == ''
+                  ? Container(
+                      child: Text(submitErrorMessage,
+                          style: TextStyle(
+                            color: Colors.red,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          )),
+                    )
+                  : Container(),
               Padding(
                 padding: const EdgeInsets.only(left: 16.0),
                 child: Text(
@@ -324,6 +333,11 @@ class _CreateApplicationState extends State<CreateApplication> {
                   ),
                 ),
               ),
+              submitting
+                  ? Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: LinearProgressIndicator())
+                  : Container(),
               Container(
                 child: Column(
                   children: entryList.map((entry) {
@@ -376,42 +390,12 @@ class _CreateApplicationState extends State<CreateApplication> {
                                           ),
                                         ),
                                       ),
-                                      DataColumn(
-                                        label: IconButton(
-                                          icon: Icon(Icons.add),
-                                          onPressed: () {
-                                            setState(() {
-                                              // List<Entry> newEntries = entryList
-                                              //     .where((element) =>
-                                              //         element.name == _selectedEntry)
-                                              //     .toList();
-                                              Course course = new Course();
-                                              course.subject = 'Physics';
-                                              course.grade = 'B';
-                                              course.score = '66';
-                                              entryList[_entryIndex]
-                                                  .courses
-                                                  .add(course);
-                                            });
-                                          },
-                                        ),
-                                      ),
                                     ],
                                     rows: entry.courses.map((row) {
                                       return DataRow(cells: <DataCell>[
                                         DataCell(Text(row.subject)),
                                         DataCell(Text(row.score)),
                                         DataCell(Text(row.grade)),
-                                        DataCell(
-                                          FlatButton.icon(
-                                            label: Text(''),
-                                            icon: Icon(Icons.remove),
-                                            onPressed: () {
-                                              print(
-                                                  'cell index ${row.subject}');
-                                            },
-                                          ),
-                                        ),
                                       ]);
                                     }).toList(),
                                   ),
@@ -449,16 +433,32 @@ class _CreateApplicationState extends State<CreateApplication> {
                 child: FlatButton(
                   color: Theme.of(context).accentColor,
                   child: Text('Submit'),
-                  onPressed: () {
-                    //submit to firebase
-                    Application newApplication = Application();
-                    newApplication.university = result.university;
-                    newApplication.result = result;
-                    newApplication.user = result.user;
-                    applicationRef.add(newApplication.toJson());
+                  onPressed: () async {
                     setState(() {
-                      applicationIndex = 3;
+                      submitting = true;
                     });
+                    try {
+                      //submit to firebase
+                      AppModel newApplication = AppModel();
+                      newApplication.university = result.university;
+                      newApplication.entries = entryList;
+                      newApplication.user = result.user;
+                      newApplication.result = result;
+                      DocumentReference doc =
+                          await applicationRef.add(newApplication.toJson());
+                      print(
+                          'newApplication: ${newApplication.toJson()}, inserted id: ${doc.documentID}');
+                      setState(() {
+                        applicationIndex = 3;
+                        submitting = false;
+                      });
+                    } catch (error) {
+                      print('error $error');
+                      setState(() {
+                        // submitErrorMessage = error;
+                        submitting = false;
+                      });
+                    }
                   },
                 ),
               ),
@@ -732,7 +732,7 @@ class _CreateApplicationState extends State<CreateApplication> {
       builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
         if (snapshot.hasData) {
           var doc = snapshot.data;
-          User userDoc = User.fromDocument(doc.data, doc.documentID);
+          User userDoc = User.fromMap(doc.data, doc.documentID);
           return Column(
             children: <Widget>[
               Expanded(

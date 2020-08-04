@@ -13,9 +13,9 @@ class University {
     this.founded,
   });
 
-  factory University.fromDocument(Map<String, dynamic> doc, String id) {
+  factory University.fromMap(Map<String, dynamic> doc) {
     University university = University();
-    university.id = id;
+    university.id = doc['id'];
     university.name = doc['name'];
     university.accronym = doc['accronym'];
     university.founded = doc['founded'];
@@ -23,7 +23,7 @@ class University {
     return university;
   }
 
-  toJson() {
+  Map<String, dynamic> toMap() {
     return {
       'id': id,
       'name': name,

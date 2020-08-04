@@ -26,8 +26,8 @@ class Welcome extends StatefulWidget {
 class _WelcomeState extends State<Welcome> {
   @override
   void initState() {
-    _auth.getCurrentUser().then((value) =>
-        print('firebase user $value')); //get the current logged in user
+    // _auth.getCurrentUser().then((value) =>
+    //     print('firebase user $value')); //get the current logged in user
     super.initState();
   }
 
@@ -51,17 +51,17 @@ class _WelcomeState extends State<Welcome> {
   void _openHome(context) async {
     FirebaseUser user =
         await _auth.getCurrentUser(); //gets the current logged user
-    print('uid $user');
+
     DocumentSnapshot doc = await _firestore
         .document('/users/${user.uid}')
         .get(); //get the user profile data from firestore
-    print('data ${doc.data}');
+
     //method to navigate to home
     await Navigator.push(
       context,
       MaterialPageRoute(
           builder: (context) =>
-              Home(user: User.fromDocument(doc.data, doc.documentID))),
+              Home(user: User.fromMap(doc.data, doc.documentID))),
     );
   }
 
