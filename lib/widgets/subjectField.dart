@@ -18,6 +18,7 @@ class _SubjectFieldState extends State<SubjectField> {
   @override
   void initState() {
     subjects = [
+      'MATHEMATICS',
       'ARABIC',
       'AGRICULTURAL SCIENCE',
       'BIOLOGY',

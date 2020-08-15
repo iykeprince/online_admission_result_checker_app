@@ -472,6 +472,7 @@ class _CreateApplicationState extends State<CreateApplication> {
   //method to show UI for inputing and handling O'level
   _buildOlevel() {
     return Column(
+
       children: [
         Expanded(
           child: ListView(
@@ -482,79 +483,80 @@ class _CreateApplicationState extends State<CreateApplication> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text(
-                      'Select Examination Type',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                    Divider(),
+                    // Text(
+                    //   'Select Examination Type',
+                    //   style: TextStyle(
+                    //     fontSize: 16,
+                    //     fontWeight: FontWeight.w400,
+                    //   ),
+                    // ),
+                    // Divider(),
                     Row(
                       children: <Widget>[
                         Container(
-                          child: DropdownButton(
-                            hint: Text('Select examination type'),
-                            items: entryList
-                                .map(
-                                  (item) => DropdownMenuItem(
-                                    value: item.name,
-                                    child: Text(
-                                      item.name,
-                                      style: TextStyle(
-                                        fontSize: 15.0,
-                                      ),
-                                    ),
-                                  ),
-                                )
-                                .toList(),
-                            onChanged: (value) {
-                              print('entry: $value');
-                              setState(() {
-                                _selectedEntry = value;
-                                _entryIndex = entryList.indexWhere(
-                                    (element) => element.name == value);
-                              });
-                            },
-                            value: _selectedEntry,
-                          ),
+                          child: Text('Enter your O\' level', style: TextStyle(fontSize: 22))
+                          // child: DropdownButton(
+                          //   hint: Text('Select examination type'),
+                          //   items: entryList
+                          //       .map(
+                          //         (item) => DropdownMenuItem(
+                          //           value: item.name,
+                          //           child: Text(
+                          //             item.name,
+                          //             style: TextStyle(
+                          //               fontSize: 15.0,
+                          //             ),
+                          //           ),
+                          //         ),
+                          //       )
+                          //       .toList(),
+                          //   onChanged: (value) {
+                          //     print('entry: $value');
+                          //     setState(() {
+                          //       _selectedEntry = value;
+                          //       _entryIndex = entryList.indexWhere(
+                          //           (element) => element.name == value);
+                          //     });
+                          //   },
+                          //   value: _selectedEntry,
+                          // ),
                         ),
                       ],
                     ),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: FlatButton(
-                        onPressed: () {
-                          print('selected Entry $_selectedEntry');
-                          setState(() {
-                            print('entry index: $_entryIndex');
-                            List<Entry> newEntries = entryList
-                                .where(
-                                    (element) => element.name == _selectedEntry)
-                                .toList();
-                            if (newEntries.length == 0) {
-                              entryList.add(
-                                Entry(
-                                  entryIndex: _entryIndex,
-                                  name: _selectedEntry,
-                                  courses: [
-                                    Course(
-                                      subject: '',
-                                      score: '',
-                                      grade: '',
-                                    ),
-                                  ],
-                                ),
-                              );
-                            }
-                          });
-                        },
-                        color: Theme.of(context).accentColor,
-                        child: Text(
-                          'Add',
-                        ),
-                      ),
-                    ),
+                    // Align(
+                    //   alignment: Alignment.centerRight,
+                    //   child: FlatButton(
+                    //     onPressed: () {
+                    //       print('selected Entry $_selectedEntry');
+                    //       setState(() {
+                    //         print('entry index: $_entryIndex');
+                    //         List<Entry> newEntries = entryList
+                    //             .where(
+                    //                 (element) => element.name == _selectedEntry)
+                    //             .toList();
+                    //         if (newEntries.length == 0) {
+                    //           entryList.add(
+                    //             Entry(
+                    //               entryIndex: _entryIndex,
+                    //               name: _selectedEntry,
+                    //               courses: [
+                    //                 Course(
+                    //                   subject: '',
+                    //                   score: '',
+                    //                   grade: '',
+                    //                 ),
+                    //               ],
+                    //             ),
+                    //           );
+                    //         }
+                    //       });
+                    //     },
+                    //     color: Theme.of(context).accentColor,
+                    //     child: Text(
+                    //       'Add',
+                    //     ),
+                    //   ),
+                    // ),
                   ],
                 ),
               ),

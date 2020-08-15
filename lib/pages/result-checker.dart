@@ -211,12 +211,12 @@ class _ResultCheckerState extends State<ResultChecker> {
                         result = Result();
                         result.user = student;
                         result.university = selectedUniversity;
-                        result.score = 220;
+                        result.score = 164;
                         openResultScreen(result);
                         print('student ${student.username}');
                         setState(() {});
                         // Navigator.push(
-                        //     context,
+                        //     context, 
                         //     MaterialPageRoute(
                         //       builder: (context) => VerifyCutOff(),
                         //     ));
