@@ -29,6 +29,7 @@ class ResultChecker extends StatefulWidget {
 
 class _ResultCheckerState extends State<ResultChecker> {
   final TextEditingController _regNumFieldController = TextEditingController();//initialize reg number controller
+  final TextEditingController _scoreFieldController = TextEditingController();//initialize score number controller
   University selectedUniversity;//selected university
 
   bool isUniversitySelected = false;//check if university is selected or choosen
@@ -187,6 +188,15 @@ class _ResultCheckerState extends State<ResultChecker> {
                       icon: Icon(Icons.person_outline),
                       value: widget.user.regNumber,
                     ),
+                    formField(
+                      controller: _scoreFieldController,
+                      text: 'What is your score?',
+                      validationText:
+                          'Please enter your score',
+                      icon: Icon(Icons.score),
+                      type: 'number',
+                      value: _scoreFieldController.text
+                    ),
                     RaisedButton(
                       color: Theme.of(context).accentColor,
                       onPressed: () async {
@@ -211,7 +221,7 @@ class _ResultCheckerState extends State<ResultChecker> {
                         result = Result();
                         result.user = student;
                         result.university = selectedUniversity;
-                        result.score = 164;
+                        result.score = int.parse(_scoreFieldController.text);
                         openResultScreen(result);
                         print('student ${student.username}');
                         setState(() {});

@@ -9,6 +9,7 @@ Container formField({
   Icon icon,
   String value = '',
   bool isPassword = false,
+  String type = 'text'
 }) {
   controller.text = value;
   return Container(
@@ -49,6 +50,7 @@ Container formField({
         }
         return null;
       },
+      keyboardType: type == 'number' ? TextInputType.number : TextInputType.text,
     ),
   );
 }
